@@ -109,17 +109,106 @@ label:focus-within .dropzone {
   inset: 32px 44px;
 }
 
+.interactive-panel,
+.interactive-card,
+.participant-card,
+.review-card,
+.consent-card,
+.file-row {
+  position: relative;
+  transition:
+    transform 0.24s ease,
+    border-color 0.24s ease,
+    background 0.24s ease,
+    box-shadow 0.24s ease,
+    filter 0.24s ease;
+}
+
+.interactive-panel::after,
+.interactive-card::after,
+.participant-card::after,
+.review-card::after,
+.consent-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.12), transparent 44%);
+  opacity: 0;
+  transform: translateX(-42%);
+  transition:
+    opacity 0.24s ease,
+    transform 0.55s ease;
+}
+
+.interactive-panel:hover,
+.interactive-card:hover,
+.participant-card:hover,
+.review-card:hover,
+.consent-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(192, 132, 252, 0.42);
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 52px rgba(102, 0, 204, 0.18);
+}
+
+.interactive-panel:hover::after,
+.interactive-card:hover::after,
+.participant-card:hover::after,
+.review-card:hover::after,
+.consent-card:hover::after {
+  opacity: 1;
+  transform: translateX(46%);
+}
+
+.logo-hover {
+  transition:
+    transform 0.28s ease,
+    filter 0.28s ease;
+}
+
+.logo-hover:hover {
+  transform: translateY(-2px) scale(1.06) rotate(-2deg);
+  filter: drop-shadow(0 0 24px rgba(192, 132, 252, 0.95)) brightness(1.12);
+}
+
 .car-pulse {
   animation: car-pulse 4.8s ease-in-out infinite;
   transform-origin: 50% 72%;
 }
 
+.side-visual:hover .car-pulse {
+  animation-duration: 2.8s;
+}
+
+.side-visual:hover .time-ring,
+.welcome-visual:hover .time-ring {
+  animation-duration: 2.2s;
+  border-color: rgba(192, 132, 252, 0.58);
+}
+
 .clock-float {
   animation: clock-float 7s ease-in-out infinite;
+  transition:
+    filter 0.28s ease,
+    opacity 0.28s ease;
+}
+
+.welcome-visual:hover .clock-float {
+  animation-duration: 4.2s;
+  filter: drop-shadow(0 0 38px rgba(192, 132, 252, 0.95)) brightness(1.1);
 }
 
 .bridge-glow {
   filter: drop-shadow(0 0 26px rgba(155, 45, 255, 0.45));
+  animation: bridge-breathe 5.8s ease-in-out infinite;
+}
+
+.file-row:hover {
+  transform: translateX(4px);
+  border-color: rgba(192, 132, 252, 0.42);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .eyebrow {
@@ -208,6 +297,17 @@ label:focus-within .dropzone {
   transform: translateY(-1px);
 }
 
+.btn-primary:hover {
+  box-shadow: 0 0 34px rgba(155, 45, 255, 0.58);
+}
+
+.btn-secondary:hover,
+.choice-button:hover,
+.icon-button:hover {
+  border-color: rgba(192, 132, 252, 0.44);
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .btn-primary:disabled,
 .btn-secondary:disabled {
   cursor: not-allowed;
@@ -259,6 +359,8 @@ label:focus-within .dropzone {
   background:
     linear-gradient(135deg, rgba(102, 0, 204, 0.22), rgba(255, 255, 255, 0.055)),
     rgba(255, 255, 255, 0.045);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(102, 0, 204, 0.16);
 }
 
 .step-pill {
@@ -271,6 +373,19 @@ label:focus-within .dropzone {
   color: #b8b8c7;
   padding: 0.72rem 0.8rem;
   font-size: 0.86rem;
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease,
+    color 0.22s ease,
+    box-shadow 0.22s ease;
+}
+
+.step-pill:hover {
+  transform: translateX(4px);
+  border-color: rgba(192, 132, 252, 0.38);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
 }
 
 .step-pill.active {
@@ -336,6 +451,34 @@ label:focus-within .dropzone {
   50% {
     transform: translateX(-50%) translateY(-8px) rotate(1deg);
   }
+}
+
+@keyframes bridge-breathe {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    opacity: 0.24;
+    transform: translateY(-4px) scale(1.012);
+  }
+}
+
+@keyframes success-orb {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 28px rgba(155, 45, 255, 0.42);
+  }
+  50% {
+    transform: scale(1.035);
+    box-shadow: 0 0 42px rgba(192, 132, 252, 0.58);
+  }
+}
+
+.success-orb {
+  animation: success-orb 3.8s ease-in-out infinite;
 }
 
 @media (max-width: 640px) {

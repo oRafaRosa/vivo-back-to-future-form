@@ -315,7 +315,7 @@ function App() {
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 sm:px-6 lg:px-8">
         <header className="flex flex-wrap items-center justify-between gap-4 pb-5">
           <div className="flex items-center gap-3">
-            <img className="h-14 w-12 object-contain drop-shadow-[0_0_18px_rgba(155,45,255,0.75)]" src={vivinhoLogo} alt="Vivinho neon" />
+            <img className="logo-hover h-14 w-12 object-contain drop-shadow-[0_0_18px_rgba(155,45,255,0.75)]" src={vivinhoLogo} alt="Vivinho neon" />
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-vivo-lilac">VIVO</p>
               <h1 className="text-lg font-semibold sm:text-2xl">Inscricao de Projetos</h1>
@@ -327,14 +327,14 @@ function App() {
         </header>
 
         <div className="grid flex-1 gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
-          <aside className="relative hidden overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-5 shadow-panel backdrop-blur-xl lg:block">
+          <aside className="interactive-panel relative hidden overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-5 shadow-panel backdrop-blur-xl lg:block">
             <div className="absolute inset-x-0 top-24 h-1 bg-gradient-to-r from-transparent via-vivo-neon to-transparent opacity-80" />
             <div className="relative">
               <p className="text-sm uppercase tracking-[0.24em] text-vivo-lilac">Vitrine de projetos</p>
               <h2 className="mt-3 text-4xl font-black leading-tight">CONSTRUIR HOJE EVOLUIR SEMPRE</h2>
             </div>
 
-            <div className="relative mt-10 h-64">
+            <div className="side-visual relative mt-10 h-64">
               <div className="time-ring" />
               <img className="car-pulse absolute bottom-0 left-1/2 w-[125%] max-w-none -translate-x-1/2 drop-shadow-[0_0_34px_rgba(155,45,255,0.75)]" src={deloreanCar} alt="Carro futurista com fundo transparente" />
             </div>
@@ -482,7 +482,7 @@ function WelcomeStep({
         <p className="mt-5 max-w-2xl text-base leading-7 text-vivo-text">
           Conte a iniciativa, mostre o impacto gerado e envie as evidências que ajudam o projeto a brilhar.
         </p>
-        <label className="mt-7 flex cursor-pointer items-start gap-3 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-sm text-vivo-text">
+        <label className="consent-card mt-7 flex cursor-pointer items-start gap-3 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-sm text-vivo-text">
           <input
             className="mt-1 h-4 w-4 accent-vivo-neon"
             type="checkbox"
@@ -496,11 +496,11 @@ function WelcomeStep({
         </label>
         <FieldError message={errors.privacyAccepted} />
       </div>
-      <div className="relative min-h-72 overflow-hidden rounded-lg border border-vivo-neon/30 bg-black/20">
+      <div className="welcome-visual interactive-card relative min-h-72 overflow-hidden rounded-lg border border-vivo-neon/30 bg-black/20">
         <div className="absolute inset-x-0 bottom-16 h-1 bg-gradient-to-r from-transparent via-vivo-neon to-transparent shadow-neon" />
         <div className="time-ring small" />
         <img className="absolute bottom-0 left-1/2 w-[74%] max-w-none -translate-x-1/2 clock-float drop-shadow-[0_0_34px_rgba(155,45,255,0.82)]" src={neonClock} alt="" />
-        <img className="absolute right-4 top-4 h-28 object-contain drop-shadow-[0_0_24px_rgba(192,132,252,0.9)]" src={vivinhoLogo} alt="" />
+        <img className="logo-hover absolute right-4 top-4 h-28 object-contain drop-shadow-[0_0_24px_rgba(192,132,252,0.9)]" src={vivinhoLogo} alt="" />
       </div>
     </div>
   );
@@ -526,7 +526,7 @@ function ParticipantsStep({
       <StepHeading title="Participantes do projeto" description="Adicione todos os integrantes e uma foto individual para cada pessoa." />
       <div className="mt-6 space-y-4">
         {participants.map((participant, index) => (
-          <div key={participant.id} className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
+          <div key={participant.id} className="participant-card rounded-lg border border-white/10 bg-white/[0.035] p-4">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h3 className="font-semibold text-white">Participante {index + 1}</h3>
               <button className="icon-button" type="button" onClick={() => removeParticipant(participant.id)} aria-label="Remover participante">
@@ -709,7 +709,7 @@ function EvidenceStep({
           {evidence.additionalEvidence.length > 0 && (
             <div className="mt-3 grid gap-2">
               {evidence.additionalEvidence.map((file, index) => (
-                <div key={`${file.name}-${index}`} className="flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/[0.035] px-3 py-2 text-sm text-vivo-text">
+                <div key={`${file.name}-${index}`} className="file-row flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/[0.035] px-3 py-2 text-sm text-vivo-text">
                   <span className="truncate">{file.name}</span>
                   <button className="icon-button" type="button" onClick={() => removeAdditionalEvidence(index)} aria-label="Remover evidencia">
                     <Trash2 size={15} />
@@ -760,7 +760,7 @@ function ConfirmationStep({ submitState, submitMessage }: { submitState: string;
   return (
     <div className="grid min-h-[460px] place-items-center text-center">
       <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="max-w-xl">
-        <div className={`mx-auto grid h-24 w-24 place-items-center rounded-full border ${isSuccess ? "border-emerald-300/60 bg-emerald-400/10 text-emerald-200" : "border-vivo-neon/50 bg-vivo-purple/20 text-vivo-lilac"} shadow-neon`}>
+        <div className={`success-orb mx-auto grid h-24 w-24 place-items-center rounded-full border ${isSuccess ? "border-emerald-300/60 bg-emerald-400/10 text-emerald-200" : "border-vivo-neon/50 bg-vivo-purple/20 text-vivo-lilac"} shadow-neon`}>
           {isSuccess ? <CheckCircle2 size={48} /> : <Rocket size={48} />}
         </div>
         <h2 className="mt-7 text-4xl font-black">{isSuccess ? "Inscricao enviada!" : "Portal pronto."}</h2>
@@ -891,7 +891,7 @@ function FileDropzone({
 
 function ReviewCard({ title, items }: { title: string; items: string[][] }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-white/[0.035] p-4">
+    <div className="review-card rounded-lg border border-white/10 bg-white/[0.035] p-4">
       <h3 className="font-semibold text-vivo-lilac">{title}</h3>
       <dl className="mt-3 space-y-3">
         {items.map(([label, value]) => (
