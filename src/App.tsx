@@ -533,7 +533,7 @@ function ParticipantsStep({
             <div className="grid gap-4 md:grid-cols-[1fr_1fr_190px]">
               <TextField
                 label="Nome completo"
-                placeholder="Ex.: Gabriela Paula da Silva"
+                placeholder="NOME COMPLETO"
                 value={participant.name}
                 onChange={(value) => updateParticipant(participant.id, { name: value })}
                 error={errors[`participant-${participant.id}-name`]}
@@ -807,7 +807,7 @@ function TextField({
       <span className="field-label">{label}</span>
       <span className="relative block">
         {icon && <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-vivo-lilac">{icon}</span>}
-        <input className={`field-input ${icon ? "pl-10" : ""}`} type={type} value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
+        <input className={`field-input ${icon ? "field-input-with-icon" : ""}`} type={type} value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
       </span>
       <FieldError message={error} />
     </label>

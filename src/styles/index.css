@@ -251,6 +251,10 @@ label:focus-within .dropzone {
   outline: none;
 }
 
+.field-input-with-icon {
+  padding-left: 2.55rem;
+}
+
 .field-input option {
   background: #0b0614;
   color: #ffffff;
