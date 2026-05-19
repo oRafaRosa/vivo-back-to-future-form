@@ -1,0 +1,163 @@
+{
+  "formTitle": "Inscrição de Projetos | De Volta Para o Futuro",
+  "steps": [
+    {
+      "id": "participants",
+      "title": "Participantes",
+      "description": "Informe quem participou do projeto.",
+      "fields": [
+        {
+          "id": "participants",
+          "type": "dynamic-participants",
+          "required": true,
+          "participantFields": [
+            {
+              "id": "name",
+              "label": "Nome do participante",
+              "type": "text",
+              "required": true,
+              "description": "Informe o nome completo da pessoa envolvida no projeto."
+            },
+            {
+              "id": "email",
+              "label": "E-mail corporativo",
+              "type": "email",
+              "required": true,
+              "description": "Preencha o e-mail corporativo do participante."
+            },
+            {
+              "id": "photo",
+              "label": "Foto individual",
+              "type": "file",
+              "required": true,
+              "accept": ["image/png", "image/jpeg", "image/webp"],
+              "description": "Anexe uma foto individual do participante."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "project",
+      "title": "Projeto",
+      "description": "Conte as informações principais do projeto.",
+      "fields": [
+        {
+          "id": "projectName",
+          "label": "Nome do projeto",
+          "type": "text",
+          "required": true,
+          "description": "Informe o nome pelo qual o projeto é conhecido."
+        },
+        {
+          "id": "startDate",
+          "label": "Data de início do projeto",
+          "type": "month",
+          "required": true,
+          "description": "Indique quando o projeto começou, no formato mês/ano."
+        },
+        {
+          "id": "problemSolved",
+          "label": "Qual problema o projeto resolve?",
+          "type": "textarea",
+          "required": true,
+          "description": "Descreva de forma objetiva qual desafio, dor ou oportunidade o projeto aborda."
+        }
+      ]
+    },
+    {
+      "id": "strategy-results",
+      "title": "Estratégia e resultados",
+      "description": "Explique o impacto do projeto.",
+      "fields": [
+        {
+          "id": "strategicGoal",
+          "label": "Qual meta estratégica da VP este projeto apoia?",
+          "type": "textarea",
+          "required": true,
+          "description": "Explique qual objetivo estratégico da VP está sendo atendido pelo projeto."
+        },
+        {
+          "id": "resultsGenerated",
+          "label": "Quais resultados o projeto gerou?",
+          "type": "textarea",
+          "required": true,
+          "description": "Apresente os principais ganhos ou impactos obtidos, como eficiência, economia, melhoria de experiência, qualidade ou produtividade."
+        }
+      ]
+    },
+    {
+      "id": "technology",
+      "title": "Tecnologia, IA e automação",
+      "description": "Informe como o projeto usa tecnologia.",
+      "fields": [
+        {
+          "id": "usesTechnology",
+          "label": "O projeto utiliza automação, IA ou alguma tecnologia?",
+          "type": "boolean",
+          "required": true,
+          "description": "Informe se o projeto envolve uso de tecnologia, automação ou inteligência artificial."
+        },
+        {
+          "id": "technologyDescription",
+          "label": "Como a tecnologia é aplicada?",
+          "type": "textarea",
+          "requiredWhen": "usesTechnology === true",
+          "description": "Descreva como a tecnologia, automação ou IA é utilizada no projeto."
+        }
+      ]
+    },
+    {
+      "id": "culture-expansion",
+      "title": "Cultura e expansão",
+      "description": "Conecte o projeto à cultura e ao futuro da operação.",
+      "fields": [
+        {
+          "id": "purplePassion",
+          "label": "Em qual Paixão Púrpura o projeto mais se enquadra?",
+          "type": "select",
+          "required": true,
+          "description": "Indique qual valor ou pilar cultural da empresa melhor representa o projeto.",
+          "optionsPlaceholder": "Confirmar lista oficial com a Gabriela"
+        },
+        {
+          "id": "expansionPotential",
+          "label": "O projeto possui potencial de expansão?",
+          "type": "textarea",
+          "required": true,
+          "description": "Explique se o projeto pode ser replicado ou ampliado para outras áreas ou contextos."
+        }
+      ]
+    },
+    {
+      "id": "evidence",
+      "title": "Evidências e resultados",
+      "description": "Anexe materiais que comprovem ou demonstrem o projeto.",
+      "fields": [
+        {
+          "id": "projectVideo",
+          "label": "Vídeo do projeto",
+          "type": "file",
+          "required": false,
+          "accept": ["video/mp4", "video/quicktime", "video/x-msvideo"],
+          "description": "Anexe um vídeo demonstrando o projeto, se houver."
+        },
+        {
+          "id": "presentation",
+          "label": "Apresentação em PowerPoint",
+          "type": "file",
+          "required": false,
+          "accept": ["application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.ms-powerpoint"],
+          "description": "Anexe uma apresentação de até 5 páginas/slides."
+        },
+        {
+          "id": "additionalEvidence",
+          "label": "Outras evidências/resultados",
+          "type": "multi-file",
+          "required": false,
+          "description": "Inclua materiais complementares que comprovem o projeto."
+        }
+      ]
+    }
+  ]
+}

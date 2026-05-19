@@ -1,0 +1,39 @@
+{
+  "submittedAt": "2026-06-08T12:00:00.000Z",
+  "source": "vivo-back-to-future-form",
+  "participants": [
+    {
+      "name": "Gabriela Paula da Silva",
+      "email": "gabriela.psilva@telefonica.com",
+      "photo": {
+        "fileName": "gabriela.png",
+        "mimeType": "image/png",
+        "base64": "BASE64_AQUI"
+      }
+    }
+  ],
+  "project": {
+    "projectName": "Nome do Projeto",
+    "startDate": "2026-01",
+    "problemSolved": "Descrição objetiva do problema resolvido.",
+    "strategicGoal": "Meta estratégica da VP apoiada pelo projeto.",
+    "resultsGenerated": "Resultados e impactos gerados.",
+    "usesTechnology": true,
+    "technologyDescription": "Descrição do uso de IA, automação ou tecnologia.",
+    "purplePassion": "Opção selecionada",
+    "expansionPotential": "Descrição do potencial de expansão."
+  },
+  "evidence": {
+    "projectVideo": {
+      "fileName": "video.mp4",
+      "mimeType": "video/mp4",
+      "base64": "BASE64_AQUI"
+    },
+    "presentation": {
+      "fileName": "apresentacao.pptx",
+      "mimeType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "base64": "BASE64_AQUI"
+    },
+    "additionalEvidence": []
+  }
+}
