@@ -330,7 +330,7 @@ function App() {
           <aside className="relative hidden overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-5 shadow-panel backdrop-blur-xl lg:block">
             <div className="absolute inset-x-0 top-24 h-1 bg-gradient-to-r from-transparent via-vivo-neon to-transparent opacity-80" />
             <div className="relative">
-              <p className="text-sm uppercase tracking-[0.24em] text-vivo-lilac">Portal temporal</p>
+              <p className="text-sm uppercase tracking-[0.24em] text-vivo-lilac">Vitrine de projetos</p>
               <h2 className="mt-3 text-4xl font-black leading-tight">CONSTRUIR HOJE EVOLUIR SEMPRE</h2>
             </div>
 
