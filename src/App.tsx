@@ -536,6 +536,7 @@ function ParticipantsStep({
             <div className="grid gap-4 md:grid-cols-[1fr_1fr_190px]">
               <TextField
                 label="Nome completo"
+                placeholder="Ex.: Gabriela Paula da Silva"
                 value={participant.name}
                 onChange={(value) => updateParticipant(participant.id, { name: value })}
                 error={errors[`participant-${participant.id}-name`]}
@@ -544,6 +545,7 @@ function ParticipantsStep({
                 label="E-mail corporativo"
                 type="email"
                 icon={<Mail size={16} />}
+                placeholder={`seuemail@${allowedEmailDomain}`}
                 value={participant.email}
                 onChange={(value) => updateParticipant(participant.id, { email: value })}
                 error={errors[`participant-${participant.id}-email`]}
@@ -576,9 +578,9 @@ function ProjectStep(props: StepProps) {
     <div>
       <StepHeading title="Informacoes do projeto" description="Conte o nome, o inicio e o problema que a iniciativa resolve." />
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <TextField label="Nome do projeto" value={data.projectName} onChange={(value) => updateField("projectName", value)} error={errors.projectName} />
+        <TextField label="Nome do projeto" placeholder="Ex.: Automacao da Jornada de Atendimento" value={data.projectName} onChange={(value) => updateField("projectName", value)} error={errors.projectName} />
         <TextField label="Data de inicio" type="month" icon={<CalendarDays size={16} />} value={data.startDate} onChange={(value) => updateField("startDate", value)} error={errors.startDate} />
-        <TextArea className="md:col-span-2" label="Qual problema o projeto resolve?" value={data.problemSolved} onChange={(value) => updateField("problemSolved", value)} error={errors.problemSolved} />
+        <TextArea className="md:col-span-2" label="Qual problema o projeto resolve?" placeholder="Descreva a dor, oportunidade ou desafio que motivou o projeto." value={data.problemSolved} onChange={(value) => updateField("problemSolved", value)} error={errors.problemSolved} />
       </div>
     </div>
   );
@@ -590,8 +592,8 @@ function StrategyStep(props: StepProps) {
     <div>
       <StepHeading title="Estrategia e resultados" description="Conecte o projeto a uma meta da VP e descreva os impactos obtidos." />
       <div className="mt-6 grid gap-4">
-        <TextArea label="Qual meta estrategica da VP este projeto apoia?" value={data.strategicGoal} onChange={(value) => updateField("strategicGoal", value)} error={errors.strategicGoal} />
-        <TextArea label="Quais resultados o projeto gerou?" value={data.resultsGenerated} onChange={(value) => updateField("resultsGenerated", value)} error={errors.resultsGenerated} />
+        <TextArea label="Qual meta estrategica da VP este projeto apoia?" placeholder="Ex.: eficiencia operacional, experiencia do cliente, qualidade, produtividade..." value={data.strategicGoal} onChange={(value) => updateField("strategicGoal", value)} error={errors.strategicGoal} />
+        <TextArea label="Quais resultados o projeto gerou?" placeholder="Informe ganhos, indicadores, economia, reducao de retrabalho ou melhoria de experiencia." value={data.resultsGenerated} onChange={(value) => updateField("resultsGenerated", value)} error={errors.resultsGenerated} />
       </div>
     </div>
   );
@@ -626,6 +628,7 @@ function TechnologyStep(props: StepProps) {
         {data.usesTechnology === "yes" && (
           <TextArea
             label="Como a tecnologia e aplicada?"
+            placeholder="Conte quais ferramentas, automacoes, dados ou recursos de IA foram usados."
             value={data.technologyDescription}
             onChange={(value) => updateField("technologyDescription", value)}
             error={errors.technologyDescription}
@@ -656,7 +659,7 @@ function CultureStep(props: StepProps) {
           </select>
           <FieldError message={errors.purplePassion} />
         </label>
-        <TextArea label="O projeto possui potencial de expansao?" value={data.expansionPotential} onChange={(value) => updateField("expansionPotential", value)} error={errors.expansionPotential} />
+        <TextArea label="O projeto possui potencial de expansao?" placeholder="Explique se pode ser replicado para outras areas, canais, squads ou regionais." value={data.expansionPotential} onChange={(value) => updateField("expansionPotential", value)} error={errors.expansionPotential} />
       </div>
       </div>
     </div>
@@ -792,6 +795,7 @@ function TextField({
   error,
   type = "text",
   icon,
+  placeholder,
 }: {
   label: string;
   value: string;
@@ -799,13 +803,14 @@ function TextField({
   error?: string;
   type?: string;
   icon?: React.ReactNode;
+  placeholder?: string;
 }) {
   return (
     <label className="block">
       <span className="field-label">{label}</span>
       <span className="relative block">
         {icon && <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-vivo-lilac">{icon}</span>}
-        <input className={`field-input ${icon ? "pl-10" : ""}`} type={type} value={value} onChange={(event) => onChange(event.target.value)} />
+        <input className={`field-input ${icon ? "pl-10" : ""}`} type={type} value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
       </span>
       <FieldError message={error} />
     </label>
@@ -817,18 +822,20 @@ function TextArea({
   value,
   onChange,
   error,
+  placeholder,
   className = "",
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
   error?: string;
+  placeholder?: string;
   className?: string;
 }) {
   return (
     <label className={`block ${className}`}>
       <span className="field-label">{label}</span>
-      <textarea className="field-input min-h-32 resize-y" value={value} onChange={(event) => onChange(event.target.value)} />
+      <textarea className="field-input min-h-32 resize-y" value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
       <FieldError message={error} />
     </label>
   );

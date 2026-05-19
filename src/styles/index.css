@@ -256,6 +256,10 @@ label:focus-within .dropzone {
   color: #ffffff;
 }
 
+.field-input::placeholder {
+  color: rgba(184, 184, 199, 0.58);
+}
+
 .btn-primary,
 .btn-secondary,
 .choice-button,
