@@ -24,6 +24,8 @@ import {
 import { ChangeEvent, DragEvent, useMemo, useState } from "react";
 import vivinhoLogo from "./assets/media/vivinho-logo.png";
 import deloreanCar from "./assets/media/delorean-car.png";
+import neonClock from "./assets/media/neon-clock.png";
+import ponteEstaiada from "./assets/media/ponte-estaiada.png";
 
 type Participant = {
   id: string;
@@ -316,7 +318,7 @@ function App() {
           <div className="flex items-center gap-3">
             <img className="h-14 w-12 object-contain drop-shadow-[0_0_18px_rgba(155,45,255,0.75)]" src={vivinhoLogo} alt="Vivinho neon" />
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-vivo-lilac">Vivo 5G</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-vivo-lilac">VIVO</p>
               <h1 className="text-lg font-semibold sm:text-2xl">Inscricao de Projetos</h1>
             </div>
           </div>
@@ -331,14 +333,11 @@ function App() {
             <div className="relative">
               <p className="text-sm uppercase tracking-[0.24em] text-vivo-lilac">Portal temporal</p>
               <h2 className="mt-3 text-4xl font-black leading-tight">Projetos que aceleram o futuro.</h2>
-              <p className="mt-4 text-sm leading-6 text-vivo-text">
-                Cadastre iniciativas de melhoria, automacao, IA e tecnologia com seguranca no ecossistema Microsoft 365.
-              </p>
             </div>
 
             <div className="relative mt-10 h-64">
               <div className="time-ring" />
-              <img className="absolute bottom-0 left-1/2 w-[125%] max-w-none -translate-x-1/2 drop-shadow-[0_0_34px_rgba(155,45,255,0.75)]" src={deloreanCar} alt="Carro futurista com fundo transparente" />
+              <img className="car-pulse absolute bottom-0 left-1/2 w-[125%] max-w-none -translate-x-1/2 drop-shadow-[0_0_34px_rgba(155,45,255,0.75)]" src={deloreanCar} alt="Carro futurista com fundo transparente" />
             </div>
 
             <div className="mt-8 space-y-3">
@@ -422,7 +421,7 @@ function App() {
             )}
 
             <footer className="py-4 text-center text-xs text-white/45">
-              Projeto estruturado por R2 Solutions Group - Tech & Consulting
+              Projeto desenvolvido por Gabriela Paula da Silva
             </footer>
           </section>
         </div>
@@ -479,11 +478,10 @@ function WelcomeStep({
   return (
     <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
       <div>
-        <p className="eyebrow">Vivo 5G | De Volta Para o Futuro</p>
+        <p className="eyebrow">VIVO | De Volta Para o Futuro</p>
         <h2 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Inscreva o projeto que move a operacao para o futuro.</h2>
         <p className="mt-5 max-w-2xl text-base leading-7 text-vivo-text">
-          O formulario coleta participantes, resultados, tecnologia aplicada e evidencias. As respostas serao enviadas ao Power
-          Automate e armazenadas no SharePoint, conforme o desenho de seguranca e LGPD do projeto.
+          O formulario coleta participantes, resultados, tecnologia aplicada e evidencias em uma jornada simples, visual e objetiva.
         </p>
         <label className="mt-7 flex cursor-pointer items-start gap-3 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-sm text-vivo-text">
           <input
@@ -494,7 +492,7 @@ function WelcomeStep({
           />
           <span>
             Estou ciente de que os dados informados serao usados apenas para inscricao, avaliacao e organizacao dos projetos
-            internos, com armazenamento no Microsoft 365.
+            internos.
           </span>
         </label>
         <FieldError message={errors.privacyAccepted} />
@@ -502,7 +500,7 @@ function WelcomeStep({
       <div className="relative min-h-72 overflow-hidden rounded-lg border border-vivo-neon/30 bg-black/20">
         <div className="absolute inset-x-0 bottom-16 h-1 bg-gradient-to-r from-transparent via-vivo-neon to-transparent shadow-neon" />
         <div className="time-ring small" />
-        <img className="absolute bottom-6 left-1/2 w-[112%] max-w-none -translate-x-1/2 drop-shadow-[0_0_34px_rgba(155,45,255,0.82)]" src={deloreanCar} alt="" />
+        <img className="absolute bottom-[-18%] left-1/2 w-[84%] max-w-none -translate-x-1/2 clock-float drop-shadow-[0_0_34px_rgba(155,45,255,0.82)]" src={neonClock} alt="" />
         <img className="absolute right-4 top-4 h-28 object-contain drop-shadow-[0_0_24px_rgba(192,132,252,0.9)]" src={vivinhoLogo} alt="" />
       </div>
     </div>
@@ -642,7 +640,9 @@ function TechnologyStep(props: StepProps) {
 function CultureStep(props: StepProps) {
   const { data, errors, updateField } = props;
   return (
-    <div>
+    <div className="relative overflow-hidden">
+      <img className="pointer-events-none absolute -right-20 bottom-0 hidden w-[54%] max-w-xl opacity-20 bridge-glow md:block" src={ponteEstaiada} alt="" />
+      <div className="relative">
       <StepHeading title="Cultura e expansao" description="Escolha a Paixao Purpura mais aderente e conte se o projeto pode escalar." />
       <div className="mt-6 grid gap-4">
         <label className="block">
@@ -658,6 +658,7 @@ function CultureStep(props: StepProps) {
           <FieldError message={errors.purplePassion} />
         </label>
         <TextArea label="O projeto possui potencial de expansao?" value={data.expansionPotential} onChange={(value) => updateField("expansionPotential", value)} error={errors.expansionPotential} />
+      </div>
       </div>
     </div>
   );
@@ -773,7 +774,7 @@ function ConfirmationStep({ submitState, submitMessage }: { submitState: string;
 function StepHeading({ title, description }: { title: string; description: string }) {
   return (
     <div>
-      <p className="eyebrow">Formulario Vivo 5G</p>
+      <p className="eyebrow">Formulario VIVO</p>
       <h2 className="mt-2 text-3xl font-black leading-tight sm:text-4xl">{title}</h2>
       <p className="mt-3 max-w-3xl text-sm leading-6 text-vivo-text sm:text-base">{description}</p>
     </div>

@@ -1,6 +1,6 @@
-# Formulario de Inscricao de Projetos - Vivo 5G | De Volta Para o Futuro
+# Formulario de Inscricao de Projetos - VIVO | De Volta Para o Futuro
 
-Aplicacao React + Vite para inscricao de projetos internos, com tema futurista inspirado em "De Volta Para o Futuro", Vivo 5G, tecnologia, IA e roxo neon.
+Aplicacao React + Vite para inscricao de projetos internos, com tema futurista inspirado em "De Volta Para o Futuro", VIVO, tecnologia, IA e roxo neon.
 
 ## Objetivo
 
@@ -67,6 +67,6 @@ As imagens originais permanecem em `public/images/`.
 
 ## Seguranca
 
-Este projeto foi pensado para evitar armazenamento em banco externo. O destino recomendado e Microsoft 365, usando SharePoint List e Document Library.
+Este projeto foi pensado para evitar armazenamento em banco externo. O destino recomendado segue o ambiente corporativo homologado.
 
-Projeto estruturado por R2 Solutions Group - Tech & Consulting
+Projeto desenvolvido por Gabriela Paula da Silva

@@ -109,6 +109,19 @@ label:focus-within .dropzone {
   inset: 32px 44px;
 }
 
+.car-pulse {
+  animation: car-pulse 4.8s ease-in-out infinite;
+  transform-origin: 50% 72%;
+}
+
+.clock-float {
+  animation: clock-float 7s ease-in-out infinite;
+}
+
+.bridge-glow {
+  filter: drop-shadow(0 0 26px rgba(155, 45, 255, 0.45));
+}
+
 .eyebrow {
   color: #c084fc;
   font-size: 0.76rem;
@@ -300,6 +313,28 @@ label:focus-within .dropzone {
   50% {
     transform: translate3d(18px, -28px, 0);
     opacity: 0.95;
+  }
+}
+
+@keyframes car-pulse {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: translateX(-50%) scale(1.018);
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes clock-float {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-8px) rotate(1deg);
   }
 }
 
