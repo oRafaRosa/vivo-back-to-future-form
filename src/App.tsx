@@ -479,9 +479,6 @@ function WelcomeStep({
       <div>
         <p className="eyebrow">VIVO | De Volta Para o Futuro</p>
         <h2 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Inscreva o projeto que move a operacao para o futuro.</h2>
-        <p className="mt-5 max-w-2xl text-base leading-7 text-vivo-text">
-          Conte a iniciativa, mostre o impacto gerado e envie as evidências que ajudam o projeto a brilhar.
-        </p>
         <label className="consent-card mt-7 flex cursor-pointer items-start gap-3 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-sm text-vivo-text">
           <input
             className="mt-1 h-4 w-4 accent-vivo-neon"
