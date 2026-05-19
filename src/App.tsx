@@ -331,7 +331,7 @@ function App() {
             <div className="absolute inset-x-0 top-24 h-1 bg-gradient-to-r from-transparent via-vivo-neon to-transparent opacity-80" />
             <div className="relative">
               <p className="text-sm uppercase tracking-[0.24em] text-vivo-lilac">Portal temporal</p>
-              <h2 className="mt-3 text-4xl font-black leading-tight">Projetos que aceleram o futuro.</h2>
+              <h2 className="mt-3 text-4xl font-black leading-tight">CONSTRUIR HOJE EVOLUIR SEMPRE</h2>
             </div>
 
             <div className="relative mt-10 h-64">
