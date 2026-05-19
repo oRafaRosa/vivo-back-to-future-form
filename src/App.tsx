@@ -94,12 +94,11 @@ const initialData: FormDataState = {
 };
 
 const purplePassions = [
-  "Cliente no centro",
-  "Fazer acontecer",
-  "Colaborar para transformar",
-  "Inovar com impacto",
-  "Aprender sempre",
-  "Outra / confirmar com Gabriela",
+  "O tempo do cliente é agora",
+  "Gente é a nossa melhor tecnologia",
+  "Ser curioso pega bem",
+  "Dá para ser mais simples",
+  "Resultado é comigo",
 ];
 
 const steps = [

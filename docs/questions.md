@@ -38,7 +38,13 @@ Implementação recomendada: campo Sim/Não. Se Sim, abrir textarea para detalha
 ## 10. Em qual Paixão Púrpura o projeto mais se enquadra?
 **Descrição:** Indique qual valor ou pilar cultural da empresa melhor representa o projeto.
 
-Observação: confirmar com a Gabriela a lista oficial de opções de Paixão Púrpura antes da versão final.
+Opções oficiais:
+
+- O tempo do cliente é agora
+- Gente é a nossa melhor tecnologia
+- Ser curioso pega bem
+- Dá para ser mais simples
+- Resultado é comigo
 
 ## 11. O projeto possui potencial de expansão?
 **Descrição:** Explique se o projeto pode ser replicado ou ampliado para outras áreas ou contextos.

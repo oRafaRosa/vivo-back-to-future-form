@@ -118,7 +118,13 @@
           "type": "select",
           "required": true,
           "description": "Indique qual valor ou pilar cultural da empresa melhor representa o projeto.",
-          "optionsPlaceholder": "Confirmar lista oficial com a Gabriela"
+          "options": [
+            "O tempo do cliente é agora",
+            "Gente é a nossa melhor tecnologia",
+            "Ser curioso pega bem",
+            "Dá para ser mais simples",
+            "Resultado é comigo"
+          ]
         },
         {
           "id": "expansionPotential",
