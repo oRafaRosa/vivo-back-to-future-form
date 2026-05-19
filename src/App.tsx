@@ -773,8 +773,7 @@ function ConfirmationStep({ submitState, submitMessage }: { submitState: string;
 function StepHeading({ title, description }: { title: string; description: string }) {
   return (
     <div>
-      <p className="eyebrow">Formulario VIVO</p>
-      <h2 className="mt-2 text-3xl font-black leading-tight sm:text-4xl">{title}</h2>
+      <h2 className="text-3xl font-black leading-tight sm:text-4xl">{title}</h2>
       <p className="mt-3 max-w-3xl text-sm leading-6 text-vivo-text sm:text-base">{description}</p>
     </div>
   );
