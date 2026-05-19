@@ -499,7 +499,7 @@ function WelcomeStep({
       <div className="relative min-h-72 overflow-hidden rounded-lg border border-vivo-neon/30 bg-black/20">
         <div className="absolute inset-x-0 bottom-16 h-1 bg-gradient-to-r from-transparent via-vivo-neon to-transparent shadow-neon" />
         <div className="time-ring small" />
-        <img className="absolute bottom-[-18%] left-1/2 w-[84%] max-w-none -translate-x-1/2 clock-float drop-shadow-[0_0_34px_rgba(155,45,255,0.82)]" src={neonClock} alt="" />
+        <img className="absolute bottom-0 left-1/2 w-[74%] max-w-none -translate-x-1/2 clock-float drop-shadow-[0_0_34px_rgba(155,45,255,0.82)]" src={neonClock} alt="" />
         <img className="absolute right-4 top-4 h-28 object-contain drop-shadow-[0_0_24px_rgba(192,132,252,0.9)]" src={vivinhoLogo} alt="" />
       </div>
     </div>
