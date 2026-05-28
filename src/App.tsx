@@ -104,13 +104,13 @@ const purplePassions = [
 const steps = [
   { title: "Boas-vindas", icon: Rocket },
   { title: "Participantes", icon: Users },
-  { title: "Informacoes do projeto", icon: FileText },
-  { title: "Estrategia e resultados", icon: Gauge },
-  { title: "Tecnologia, IA e automacao", icon: Bot },
-  { title: "Cultura e expansao", icon: Sparkles },
-  { title: "Evidencias", icon: UploadCloud },
-  { title: "Revisao e envio", icon: FileCheck2 },
-  { title: "Confirmacao", icon: CheckCircle2 },
+  { title: "Informações do projeto", icon: FileText },
+  { title: "Estratégia e resultados", icon: Gauge },
+  { title: "Tecnologia, IA e automação", icon: Bot },
+  { title: "Cultura e expansão", icon: Sparkles },
+  { title: "Evidências", icon: UploadCloud },
+  { title: "Revisão e envio", icon: FileCheck2 },
+  { title: "Confirmação", icon: CheckCircle2 },
 ];
 
 function App() {
@@ -137,7 +137,7 @@ function App() {
     if (step === 1) {
       formData.participants.forEach((participant, index) => {
         if (!participant.name.trim()) nextErrors[`participant-${participant.id}-name`] = "Informe o nome.";
-        if (!isValidEmail(participant.email)) nextErrors[`participant-${participant.id}-email`] = "Informe um e-mail valido.";
+        if (!isValidEmail(participant.email)) nextErrors[`participant-${participant.id}-email`] = "Informe um e-mail válido.";
         if (!participant.email.toLowerCase().endsWith(`@${allowedEmailDomain.toLowerCase()}`)) {
           nextErrors[`participant-${participant.id}-email`] = `Use e-mail corporativo @${allowedEmailDomain}.`;
         }
@@ -282,7 +282,7 @@ function App() {
 
     if (!endpoint) {
       setSubmitState("error");
-      setSubmitMessage("Configure VITE_POWER_AUTOMATE_ENDPOINT no ambiente antes de enviar inscricoes reais.");
+      setSubmitMessage("Configure VITE_POWER_AUTOMATE_ENDPOINT no ambiente antes de enviar inscrições reais.");
       return;
     }
 
@@ -300,11 +300,11 @@ function App() {
       if (!response.ok) throw new Error("Falha no envio");
 
       setSubmitState("success");
-      setSubmitMessage("Inscricao recebida com sucesso.");
+      setSubmitMessage("Inscrição recebida com sucesso.");
       setCurrentStep(steps.length - 1);
     } catch {
       setSubmitState("error");
-      setSubmitMessage("Nao foi possivel enviar agora. Tente novamente ou acione a equipe organizadora.");
+      setSubmitMessage("Não foi possível enviar agora. Tente novamente ou acione a equipe organizadora.");
     }
   };
 
@@ -318,7 +318,7 @@ function App() {
             <img className="logo-hover h-14 w-12 object-contain drop-shadow-[0_0_18px_rgba(155,45,255,0.75)]" src={vivinhoLogo} alt="Vivinho neon" />
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-vivo-lilac">VIVO</p>
-              <h1 className="text-lg font-semibold sm:text-2xl">Inscricao de Projetos</h1>
+              <h1 className="text-lg font-semibold sm:text-2xl">Inscrição de Projetos</h1>
             </div>
           </div>
           <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-vivo-text">
@@ -331,7 +331,7 @@ function App() {
             <div className="absolute inset-x-0 top-24 h-1 bg-gradient-to-r from-transparent via-vivo-neon to-transparent opacity-80" />
             <div className="relative">
               <p className="text-sm uppercase tracking-[0.24em] text-vivo-lilac">Vitrine de projetos</p>
-              <h2 className="mt-3 text-4xl font-black leading-tight">CONSTRUIR HOJE EVOLUIR SEMPRE</h2>
+              <h2 className="mt-3 text-4xl font-black leading-tight">CONSTRUIR HOJE, EVOLUIR SEMPRE</h2>
             </div>
 
             <div className="side-visual relative mt-10 h-64">
@@ -407,12 +407,12 @@ function App() {
 
                 {currentStep < steps.length - 2 ? (
                   <button className="btn-primary" type="button" onClick={goNext}>
-                    Avancar
+                    Avançar
                     <ChevronRight size={18} />
                   </button>
                 ) : (
                   <button className="btn-primary" type="button" onClick={submitForm} disabled={submitState === "sending"}>
-                    {submitState === "sending" ? "Enviando..." : "Enviar inscricao"}
+                    {submitState === "sending" ? "Enviando..." : "Enviar inscrição"}
                     <Send size={18} />
                   </button>
                 )}
@@ -478,7 +478,7 @@ function WelcomeStep({
     <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
       <div>
         <p className="eyebrow">VIVO | De Volta Para o Futuro</p>
-        <h2 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Inscreva o projeto que move a operacao para o futuro.</h2>
+        <h2 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Inscreva o projeto que move a operação para o futuro.</h2>
         <label className="consent-card mt-7 flex cursor-pointer items-start gap-3 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-sm text-vivo-text">
           <input
             className="mt-1 h-4 w-4 accent-vivo-neon"
@@ -487,7 +487,7 @@ function WelcomeStep({
             onChange={(event) => updateField("privacyAccepted", event.target.checked)}
           />
           <span>
-            Estou ciente de que os dados informados serao usados apenas para inscricao, avaliacao e organizacao dos projetos
+            Estou ciente de que os dados informados serão usados apenas para inscrição, avaliação e organização dos projetos
             internos.
           </span>
         </label>
@@ -573,10 +573,10 @@ function ProjectStep(props: StepProps) {
   const { data, errors, updateField } = props;
   return (
     <div>
-      <StepHeading title="Informacoes do projeto" description="Conte o nome, o inicio e o problema que a iniciativa resolve." />
+      <StepHeading title="Informações do projeto" description="Conte o nome, o início e o problema que a iniciativa resolve." />
       <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <TextField label="Nome do projeto" placeholder="Ex.: Automacao da Jornada de Atendimento" value={data.projectName} onChange={(value) => updateField("projectName", value)} error={errors.projectName} />
-        <TextField label="Data de inicio" type="month" icon={<CalendarDays size={16} />} value={data.startDate} onChange={(value) => updateField("startDate", value)} error={errors.startDate} />
+        <TextField label="Nome do projeto" placeholder="Ex.: Automação da Jornada de Atendimento" value={data.projectName} onChange={(value) => updateField("projectName", value)} error={errors.projectName} />
+        <TextField label="Data de início" type="month" icon={<CalendarDays size={16} />} value={data.startDate} onChange={(value) => updateField("startDate", value)} error={errors.startDate} />
         <TextArea className="md:col-span-2" label="Qual problema o projeto resolve?" placeholder="Descreva a dor, oportunidade ou desafio que motivou o projeto." value={data.problemSolved} onChange={(value) => updateField("problemSolved", value)} error={errors.problemSolved} />
       </div>
     </div>
@@ -587,10 +587,10 @@ function StrategyStep(props: StepProps) {
   const { data, errors, updateField } = props;
   return (
     <div>
-      <StepHeading title="Estrategia e resultados" description="Conecte o projeto a uma meta da VP e descreva os impactos obtidos." />
+      <StepHeading title="Estratégia e resultados" description="Conecte o projeto a uma meta da VP e descreva os impactos obtidos." />
       <div className="mt-6 grid gap-4">
-        <TextArea label="Qual meta estrategica da VP este projeto apoia?" placeholder="Ex.: eficiencia operacional, experiencia do cliente, qualidade, produtividade..." value={data.strategicGoal} onChange={(value) => updateField("strategicGoal", value)} error={errors.strategicGoal} />
-        <TextArea label="Quais resultados o projeto gerou?" placeholder="Informe ganhos, indicadores, economia, reducao de retrabalho ou melhoria de experiencia." value={data.resultsGenerated} onChange={(value) => updateField("resultsGenerated", value)} error={errors.resultsGenerated} />
+        <TextArea label="Qual meta estratégica da VP este projeto apoia?" placeholder="Ex.: eficiência operacional, experiência do cliente, qualidade, produtividade..." value={data.strategicGoal} onChange={(value) => updateField("strategicGoal", value)} error={errors.strategicGoal} />
+        <TextArea label="Quais resultados o projeto gerou?" placeholder="Informe ganhos, indicadores, economia, redução de retrabalho ou melhoria de experiência." value={data.resultsGenerated} onChange={(value) => updateField("resultsGenerated", value)} error={errors.resultsGenerated} />
       </div>
     </div>
   );
@@ -600,14 +600,14 @@ function TechnologyStep(props: StepProps) {
   const { data, errors, updateField } = props;
   return (
     <div>
-      <StepHeading title="Tecnologia, IA e automacao" description="Informe se ha uso de automacao, inteligencia artificial ou outra tecnologia." />
+      <StepHeading title="Tecnologia, IA e automação" description="Informe se há uso de automação, inteligência artificial ou outra tecnologia." />
       <div className="mt-6 space-y-5">
         <div>
-          <span className="field-label">O projeto utiliza automacao, IA ou alguma tecnologia?</span>
+          <span className="field-label">O projeto utiliza automação, IA ou alguma tecnologia?</span>
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
             {[
               ["yes", "Sim, utiliza tecnologia"],
-              ["no", "Nao utiliza"],
+              ["no", "Não utiliza"],
             ].map(([value, label]) => (
               <button
                 key={value}
@@ -624,8 +624,8 @@ function TechnologyStep(props: StepProps) {
 
         {data.usesTechnology === "yes" && (
           <TextArea
-            label="Como a tecnologia e aplicada?"
-            placeholder="Conte quais ferramentas, automacoes, dados ou recursos de IA foram usados."
+            label="Como a tecnologia é aplicada?"
+            placeholder="Conte quais ferramentas, automações, dados ou recursos de IA foram usados."
             value={data.technologyDescription}
             onChange={(value) => updateField("technologyDescription", value)}
             error={errors.technologyDescription}
@@ -642,12 +642,12 @@ function CultureStep(props: StepProps) {
     <div className="relative overflow-hidden">
       <img className="pointer-events-none absolute -right-20 bottom-0 hidden w-[54%] max-w-xl opacity-20 bridge-glow md:block" src={ponteEstaiada} alt="" />
       <div className="relative">
-      <StepHeading title="Cultura e expansao" description="Escolha a Paixao Purpura mais aderente e conte se o projeto pode escalar." />
+      <StepHeading title="Cultura e expansão" description="Escolha a Paixão Púrpura mais aderente e conte se o projeto pode escalar." />
       <div className="mt-6 grid gap-4">
         <label className="block">
-          <span className="field-label">Paixao Purpura</span>
+          <span className="field-label">Paixão Púrpura</span>
           <select className="field-input" value={data.purplePassion} onChange={(event) => updateField("purplePassion", event.target.value)}>
-            <option value="">Selecione uma opcao</option>
+            <option value="">Selecione uma opção</option>
             {purplePassions.map((option) => (
               <option key={option} value={option}>
                 {option}
@@ -656,7 +656,7 @@ function CultureStep(props: StepProps) {
           </select>
           <FieldError message={errors.purplePassion} />
         </label>
-        <TextArea label="O projeto possui potencial de expansao?" placeholder="Explique se pode ser replicado para outras areas, canais, squads ou regionais." value={data.expansionPotential} onChange={(value) => updateField("expansionPotential", value)} error={errors.expansionPotential} />
+        <TextArea label="O projeto possui potencial de expansão?" placeholder="Explique se pode ser replicado para outras áreas, canais, squads ou regionais." value={data.expansionPotential} onChange={(value) => updateField("expansionPotential", value)} error={errors.expansionPotential} />
       </div>
       </div>
     </div>
@@ -678,10 +678,10 @@ function EvidenceStep({
 }) {
   return (
     <div>
-      <StepHeading title="Evidencias e resultados" description={`Anexe video, PowerPoint e materiais complementares. Limite por arquivo: ${maxFileSizeMb} MB.`} />
+      <StepHeading title="Evidências e resultados" description={`Anexe vídeo, PowerPoint e materiais complementares. Limite por arquivo: ${maxFileSizeMb} MB.`} />
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <FileDropzone
-          label="Video do projeto"
+          label="Vídeo do projeto"
           accept="video/mp4,video/quicktime,video/x-msvideo"
           icon={<Video size={20} />}
           fileName={evidence.projectVideo?.name}
@@ -689,7 +689,7 @@ function EvidenceStep({
           onFiles={(files) => setEvidenceFile("projectVideo", files[0] ?? null)}
         />
         <FileDropzone
-          label="Apresentacao PowerPoint"
+          label="Apresentação PowerPoint"
           accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
           icon={<FileText size={20} />}
           fileName={evidence.presentation?.name}
@@ -699,7 +699,7 @@ function EvidenceStep({
         <div className="md:col-span-2">
           <FileDropzone
             multiple
-            label="Outras evidencias/resultados"
+            label="Outras evidências/resultados"
             accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,video/*"
             icon={<UploadCloud size={20} />}
             fileName={evidence.additionalEvidence.length ? `${evidence.additionalEvidence.length} arquivo(s) selecionado(s)` : undefined}
@@ -711,7 +711,7 @@ function EvidenceStep({
               {evidence.additionalEvidence.map((file, index) => (
                 <div key={`${file.name}-${index}`} className="file-row flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/[0.035] px-3 py-2 text-sm text-vivo-text">
                   <span className="truncate">{file.name}</span>
-                  <button className="icon-button" type="button" onClick={() => removeAdditionalEvidence(index)} aria-label="Remover evidencia">
+                  <button className="icon-button" type="button" onClick={() => removeAdditionalEvidence(index)} aria-label="Remover evidência">
                     <Trash2 size={15} />
                   </button>
                 </div>
@@ -727,25 +727,25 @@ function EvidenceStep({
 function ReviewStep({ data, submitState, submitMessage }: { data: FormDataState; submitState: string; submitMessage: string }) {
   return (
     <div>
-      <StepHeading title="Revisao antes do envio" description="Confira os principais dados antes de enviar para o fluxo Power Automate." />
+      <StepHeading title="Revisão antes do envio" description="Confira os principais dados antes de enviar para o fluxo Power Automate." />
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <ReviewCard title="Projeto" items={[["Nome", data.projectName], ["Inicio", data.startDate], ["Problema", data.problemSolved]]} />
+        <ReviewCard title="Projeto" items={[["Nome", data.projectName], ["Início", data.startDate], ["Problema", data.problemSolved]]} />
         <ReviewCard title="Participantes" items={data.participants.map((participant) => [participant.name, participant.email])} />
-        <ReviewCard title="Estrategia" items={[["Meta da VP", data.strategicGoal], ["Resultados", data.resultsGenerated]]} />
+        <ReviewCard title="Estratégia" items={[["Meta da VP", data.strategicGoal], ["Resultados", data.resultsGenerated]]} />
         <ReviewCard
           title="Tecnologia e cultura"
           items={[
-            ["Usa tecnologia", data.usesTechnology === "yes" ? "Sim" : "Nao"],
-            ["Descricao", data.technologyDescription || "Nao aplicavel"],
-            ["Paixao Purpura", data.purplePassion],
-            ["Expansao", data.expansionPotential],
+            ["Usa tecnologia", data.usesTechnology === "yes" ? "Sim" : "Não"],
+            ["Descrição", data.technologyDescription || "Não aplicável"],
+            ["Paixão Púrpura", data.purplePassion],
+            ["Expansão", data.expansionPotential],
           ]}
         />
         <ReviewCard
-          title="Evidencias"
+          title="Evidências"
           items={[
-            ["Video", data.evidence.projectVideo?.name || "Nao anexado"],
-            ["PowerPoint", data.evidence.presentation?.name || "Nao anexado"],
+            ["Vídeo", data.evidence.projectVideo?.name || "Não anexado"],
+            ["PowerPoint", data.evidence.presentation?.name || "Não anexado"],
             ["Complementares", `${data.evidence.additionalEvidence.length} arquivo(s)`],
           ]}
         />
@@ -763,8 +763,8 @@ function ConfirmationStep({ submitState, submitMessage }: { submitState: string;
         <div className={`success-orb mx-auto grid h-24 w-24 place-items-center rounded-full border ${isSuccess ? "border-emerald-300/60 bg-emerald-400/10 text-emerald-200" : "border-vivo-neon/50 bg-vivo-purple/20 text-vivo-lilac"} shadow-neon`}>
           {isSuccess ? <CheckCircle2 size={48} /> : <Rocket size={48} />}
         </div>
-        <h2 className="mt-7 text-4xl font-black">{isSuccess ? "Inscricao enviada!" : "Portal pronto."}</h2>
-        <p className="mt-4 text-vivo-text">{submitMessage || "Quando o endpoint estiver configurado, o envio seguira para o Power Automate."}</p>
+        <h2 className="mt-7 text-4xl font-black">{isSuccess ? "Inscrição enviada!" : "Portal pronto."}</h2>
+        <p className="mt-4 text-vivo-text">{submitMessage || "Quando o endpoint estiver configurado, o envio seguirá para o Power Automate."}</p>
       </motion.div>
     </div>
   );
@@ -929,7 +929,7 @@ function StatusMessage({ type, message }: { type: "error" | "success"; message: 
 }
 
 function requireText(errors: Record<string, string>, key: string, value: string) {
-  if (!value.trim()) errors[key] = "Campo obrigatorio.";
+  if (!value.trim()) errors[key] = "Campo obrigatório.";
 }
 
 function isValidEmail(value: string) {
@@ -938,7 +938,7 @@ function isValidEmail(value: string) {
 
 function validateFile(file: File, accept?: string[]) {
   if (file.size > maxFileSizeMb * 1024 * 1024) return `Arquivo acima de ${maxFileSizeMb} MB.`;
-  if (accept && !accept.includes(file.type)) return "Formato de arquivo nao permitido.";
+  if (accept && !accept.includes(file.type)) return "Formato de arquivo não permitido.";
   return "";
 }
 
