@@ -62,6 +62,7 @@ type FormDataState = {
 const endpoint = import.meta.env.VITE_POWER_AUTOMATE_ENDPOINT as string | undefined;
 const allowedEmailDomain = (import.meta.env.VITE_ALLOWED_EMAIL_DOMAIN ?? "telefonica.com") as string;
 const draftStorageKey = "vivo-back-to-future-form-draft-v2";
+const submissionEnabled = false;
 
 const responsibleAreas = [
   "Gerência de Serviços ao Cliente Centralizado",
@@ -273,6 +274,8 @@ function App() {
   };
 
   const submitForm = async () => {
+    if (!submissionEnabled) return;
+
     for (let step = 0; step < steps.length - 1; step += 1) {
       if (!validateStep(step)) {
         setCurrentStep(step);
@@ -315,6 +318,7 @@ function App() {
   return (
     <main className="min-h-screen overflow-hidden bg-vivo-black text-white">
       <BackgroundScene />
+      <VivinhoProgress progress={progress} />
 
       <section className="relative z-10 mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-5 sm:px-6 lg:px-8">
         <header className="flex flex-wrap items-center justify-between gap-4 pb-5">
@@ -425,8 +429,8 @@ function App() {
                     <ChevronRight size={18} />
                   </button>
                 ) : (
-                  <button className="btn-primary" type="button" onClick={submitForm} disabled={submitState === "sending"}>
-                    {submitState === "sending" ? "Enviando..." : "Enviar inscrição"}
+                  <button className="btn-primary" type="button" onClick={submitForm} disabled={!submissionEnabled || submitState === "sending"}>
+                    {submitState === "sending" ? "Enviando..." : "Envio desabilitado"}
                     <Send size={18} />
                   </button>
                 )}
@@ -452,6 +456,19 @@ function BackgroundScene() {
       <div className="particle particle-a" />
       <div className="particle particle-b" />
       <div className="particle particle-c" />
+    </div>
+  );
+}
+
+function VivinhoProgress({ progress }: { progress: number }) {
+  return (
+    <div className="vivinho-progress" aria-hidden="true">
+      <div className="vivinho-progress-orbit" />
+      <img className="vivinho-progress-outline" src={vivinhoLogo} alt="" />
+      <div className="vivinho-progress-fill" style={{ height: `${progress}%` }}>
+        <img src={vivinhoLogo} alt="" />
+      </div>
+      <span className="vivinho-progress-label">{Math.round(progress)}%</span>
     </div>
   );
 }
