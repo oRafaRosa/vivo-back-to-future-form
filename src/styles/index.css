@@ -235,7 +235,7 @@ label:focus-within .dropzone {
 }
 
 .vivinho-progress-outline {
-  opacity: 0.22;
+  opacity: 0.34;
   filter:
     grayscale(1)
     brightness(0)
@@ -246,7 +246,7 @@ label:focus-within .dropzone {
 
 .vivinho-progress-fill {
   transition: clip-path 0.32s ease;
-  filter: drop-shadow(0 0 14px rgba(192, 132, 252, 0.82)) saturate(1.12);
+  filter: saturate(1.16) brightness(1.08);
 }
 
 .vivinho-progress-label {
