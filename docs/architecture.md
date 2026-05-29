@@ -6,35 +6,29 @@
 Usuário
   ↓
 React App
-  ↓ JSON + arquivos em Base64
+  ↓ JSON
 Power Automate HTTP Trigger
   ↓
 SharePoint List: item principal da inscrição
   ↓
-SharePoint Document Library: vídeos, apresentações e evidências
-  ↓
-SharePoint List atualizada com links dos arquivos
+Link OneDrive: pasta compartilhada com vídeo, apresentação e evidências
 ```
 
-## Por que não usar Excel como banco principal
+## Por que não enviar vídeos e apresentações pelo formulário
 
-Excel Online pode funcionar para MVP muito simples, mas não é o melhor destino para arquivos e evidências.
-
-Riscos do Excel como base principal:
-
-- Concorrência de edição
-- Tabela quebrar ou ser alterada manualmente
-- Dificuldade para anexos
-- Menos controle estrutural
-- Menos escalável
+Arquivos grandes aumentam o tempo de envio, exigem armazenamento adicional e tornam o fluxo mais sensível a falhas. Para simplificar o MVP, o usuário deve criar uma pasta no OneDrive, colocar nela o vídeo, a apresentação e as evidências, compartilhar a pasta e informar o link no formulário.
 
 ## Recomendação
 
 Usar:
 
 - SharePoint List para os dados estruturados.
-- SharePoint Document Library para arquivos de evidência.
+- OneDrive compartilhado pelo usuário para evidências.
 - Exportação para Excel/Power BI apenas como saída ou relatório.
+
+## Rascunho local
+
+As respostas são salvas no cache do navegador via `localStorage`, para evitar perda de preenchimento se a página for atualizada.
 
 ## Variáveis de ambiente
 
@@ -42,7 +36,6 @@ Criar `.env.example`:
 
 ```env
 VITE_POWER_AUTOMATE_ENDPOINT=
-VITE_MAX_FILE_SIZE_MB=25
 VITE_ALLOWED_EMAIL_DOMAIN=telefonica.com
 ```
 

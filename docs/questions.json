@@ -21,11 +21,10 @@
           "required": true,
           "options": [
             "Gerência de Serviços ao Cliente Centralizado",
-            "Operações FTTH",
             "Qualidade",
-            "MIS / Analytics",
-            "Atendimento",
-            "Outra área"
+            "Produção",
+            "Projetos e TI",
+            "Processos"
           ]
         },
         {
@@ -111,13 +110,12 @@
           "required": true,
           "options": [
             "Produtividade",
-            "Eficiência Operacional",
-            "IA",
-            "Automação",
-            "Experiência do Cliente",
-            "Ganho financeiro",
             "Qualidade",
-            "Escalabilidade"
+            "Eficiência",
+            "Processos",
+            "Experiência do Cliente",
+            "IA",
+            "Automação"
           ]
         },
         {
@@ -153,7 +151,30 @@
           "label": "Produtos Impactados",
           "type": "checkbox",
           "required": true,
-          "options": ["Fibra", "IPTV", "Voz IMS", "B2B", "B2C", "Móvel", "Outros"]
+          "options": [
+            "Cobre",
+            "Fibra",
+            "Móvel",
+            "Voz – TDM (v5)",
+            "Voz – TDM (h248)",
+            "Voz – IMS (V5.2)",
+            "Voz – IMS (H248)",
+            "Voz – IMS",
+            "Voip/SIP",
+            "Projetos especiais",
+            "Banda Larga Fibra",
+            "Banda Larga Cobre",
+            "B2B Dados Avançado",
+            "Pré-Pago",
+            "Pós-pago",
+            "Controle",
+            "Híbrida",
+            "DTH",
+            "IPTV",
+            "B2C",
+            "B2B",
+            "Atacado"
+          ]
         },
         {
           "id": "assumptions",
@@ -174,31 +195,14 @@
     {
       "id": "evidence",
       "title": "Evidências",
-      "description": "Anexe vídeo obrigatório e materiais complementares.",
+      "description": "Informe o link da pasta compartilhada no OneDrive.",
       "fields": [
         {
-          "id": "projectVideo",
-          "label": "Upload do Vídeo",
-          "type": "file",
+          "id": "oneDriveFolderLink",
+          "label": "Link da pasta compartilhada no OneDrive",
+          "type": "url",
           "required": true,
-          "accept": ["video/mp4", "video/quicktime", "video/x-msvideo", "video/webm"],
-          "rule": "Vídeo de até 3 minutos"
-        },
-        {
-          "id": "presentation",
-          "label": "Apresentação PowerPoint",
-          "type": "file",
-          "required": false,
-          "accept": [
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            "application/vnd.ms-powerpoint"
-          ]
-        },
-        {
-          "id": "additionalEvidence",
-          "label": "Outras evidências/resultados",
-          "type": "multi-file",
-          "required": false
+          "description": "Crie uma pasta no OneDrive com vídeo, apresentação e evidências. Compartilhe a pasta e cole o link no formulário."
         }
       ]
     }

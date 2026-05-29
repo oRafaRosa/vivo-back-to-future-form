@@ -52,10 +52,10 @@ A experiência deve ser:
 5. Coletar impacto estratégico por múltipla escolha.
 6. Coletar situação atual (AS IS) e situação futura (TO BE).
 7. Coletar benefícios do projeto, produtos impactados, premissas e resultados esperados.
-8. Permitir anexar vídeo obrigatório do projeto.
-9. Permitir anexar apresentação PowerPoint e evidências complementares.
-10. Mostrar tela de revisão antes do envio.
-11. Permitir baixar um arquivo `.xlsx` com as respostas organizadas.
+8. Coletar o link de uma pasta compartilhada no OneDrive com vídeo, apresentação PowerPoint e evidências complementares.
+9. Mostrar tela de revisão antes do envio.
+10. Permitir baixar um arquivo `.xlsx` com as respostas organizadas.
+11. Manter rascunho das respostas no cache do navegador para evitar perda ao atualizar a página.
 12. Enviar dados para Power Automate.
 13. Power Automate deve salvar dados em SharePoint.
 

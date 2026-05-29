@@ -267,6 +267,7 @@ label:focus-within .dropzone {
 .btn-primary,
 .btn-secondary,
 .choice-button,
+.checkbox-option,
 .icon-button {
   display: inline-flex;
   align-items: center;
@@ -301,6 +302,7 @@ label:focus-within .dropzone {
 .btn-primary:hover,
 .btn-secondary:hover,
 .choice-button:hover,
+.checkbox-option:hover,
 .icon-button:hover {
   transform: translateY(-1px);
 }
@@ -311,6 +313,7 @@ label:focus-within .dropzone {
 
 .btn-secondary:hover,
 .choice-button:hover,
+.checkbox-option:hover,
 .icon-button:hover {
   border-color: rgba(192, 132, 252, 0.44);
   background: rgba(255, 255, 255, 0.08);
@@ -343,6 +346,52 @@ label:focus-within .dropzone {
   border-color: rgba(192, 132, 252, 0.78);
   background: rgba(102, 0, 204, 0.35);
   box-shadow: 0 0 22px rgba(155, 45, 255, 0.24);
+}
+
+.checkbox-option {
+  min-height: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.045);
+  color: #ffffff;
+  padding: 0.58rem 0.72rem;
+  font-size: 0.86rem;
+  line-height: 1.15;
+}
+
+.checkbox-option.selected {
+  border-color: rgba(192, 132, 252, 0.78);
+  background: rgba(102, 0, 204, 0.34);
+  box-shadow: 0 0 18px rgba(155, 45, 255, 0.22);
+}
+
+.option-scroll {
+  display: grid;
+  max-height: 248px;
+  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+  gap: 0.55rem;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 0.7rem;
+}
+
+.selected-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  border: 1px solid rgba(192, 132, 252, 0.45);
+  border-radius: 999px;
+  background: rgba(102, 0, 204, 0.22);
+  color: #ffffff;
+  padding: 0.36rem 0.62rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.selected-chip:hover {
+  border-color: rgba(192, 132, 252, 0.78);
+  background: rgba(102, 0, 204, 0.34);
 }
 
 .dropzone {

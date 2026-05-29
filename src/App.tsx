@@ -10,6 +10,7 @@ import {
   FileCheck2,
   FileText,
   Gauge,
+  Link as LinkIcon,
   Mail,
   Plus,
   Rocket,
@@ -18,10 +19,9 @@ import {
   Trash2,
   UploadCloud,
   Users,
-  Video,
   XCircle,
 } from "lucide-react";
-import { ChangeEvent, DragEvent, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import writeXlsxFile from "write-excel-file/browser";
 import vivinhoLogo from "./assets/media/vivinho-logo.png";
 import deloreanCar from "./assets/media/delorean-car.png";
@@ -35,9 +35,7 @@ type CoParticipant = {
 };
 
 type Evidence = {
-  projectVideo: File | null;
-  presentation: File | null;
-  additionalEvidence: File[];
+  oneDriveFolderLink: string;
 };
 
 type FormDataState = {
@@ -61,37 +59,52 @@ type FormDataState = {
   privacyAccepted: boolean;
 };
 
-type FilePayload = {
-  fileName: string;
-  mimeType: string;
-  base64: string;
-};
-
 const endpoint = import.meta.env.VITE_POWER_AUTOMATE_ENDPOINT as string | undefined;
-const maxFileSizeMb = Number(import.meta.env.VITE_MAX_FILE_SIZE_MB ?? 25);
 const allowedEmailDomain = (import.meta.env.VITE_ALLOWED_EMAIL_DOMAIN ?? "telefonica.com") as string;
+const draftStorageKey = "vivo-back-to-future-form-draft-v2";
 
 const responsibleAreas = [
   "Gerência de Serviços ao Cliente Centralizado",
-  "Operações FTTH",
   "Qualidade",
-  "MIS / Analytics",
-  "Atendimento",
-  "Outra área",
+  "Produção",
+  "Projetos e TI",
+  "Processos",
 ];
 
 const strategicImpactOptions = [
   "Produtividade",
-  "Eficiência Operacional",
+  "Qualidade",
+  "Eficiência",
+  "Processos",
+  "Experiência do Cliente",
   "IA",
   "Automação",
-  "Experiência do Cliente",
-  "Ganho financeiro",
-  "Qualidade",
-  "Escalabilidade",
 ];
 
-const impactedProductOptions = ["Fibra", "IPTV", "Voz IMS", "B2B", "B2C", "Móvel", "Outros"];
+const impactedProductOptions = [
+  "Cobre",
+  "Fibra",
+  "Móvel",
+  "Voz – TDM (v5)",
+  "Voz – TDM (h248)",
+  "Voz – IMS (V5.2)",
+  "Voz – IMS (H248)",
+  "Voz – IMS",
+  "Voip/SIP",
+  "Projetos especiais",
+  "Banda Larga Fibra",
+  "Banda Larga Cobre",
+  "B2B Dados Avançado",
+  "Pré-Pago",
+  "Pós-pago",
+  "Controle",
+  "Híbrida",
+  "DTH",
+  "IPTV",
+  "B2C",
+  "B2B",
+  "Atacado",
+];
 
 const initialCoParticipant = (): CoParticipant => ({
   id: crypto.randomUUID(),
@@ -117,9 +130,7 @@ const initialData: FormDataState = {
   assumptions: "",
   expectedResults: "",
   evidence: {
-    projectVideo: null,
-    presentation: null,
-    additionalEvidence: [],
+    oneDriveFolderLink: "",
   },
   privacyAccepted: false,
 };
@@ -137,7 +148,7 @@ const steps = [
 
 function App() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<FormDataState>(initialData);
+  const [formData, setFormData] = useState<FormDataState>(() => loadSavedDraft());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitState, setSubmitState] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [submitMessage, setSubmitMessage] = useState("");
@@ -194,8 +205,11 @@ function App() {
       if (formData.assumptions.length > 500) nextErrors.assumptions = "Use no máximo 500 caracteres.";
     }
 
-    if (step === 5 && !formData.evidence.projectVideo) {
-      nextErrors.projectVideo = "Anexe o vídeo do projeto.";
+    if (step === 5) {
+      requireText(nextErrors, "oneDriveFolderLink", formData.evidence.oneDriveFolderLink);
+      if (formData.evidence.oneDriveFolderLink && !isValidUrl(formData.evidence.oneDriveFolderLink)) {
+        nextErrors.oneDriveFolderLink = "Informe um link válido da pasta compartilhada no OneDrive.";
+      }
     }
 
     setErrors(nextErrors);
@@ -246,54 +260,12 @@ function App() {
     setErrors((current) => omitKey(current, key));
   };
 
-  const setEvidenceFile = (key: "projectVideo" | "presentation", file: File | null) => {
-    if (!file) return;
-    const accept =
-      key === "projectVideo"
-        ? ["video/mp4", "video/quicktime", "video/x-msvideo", "video/webm"]
-        : ["application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.ms-powerpoint"];
-    const error = validateFile(file, accept);
-    if (error) {
-      setErrors((current) => ({ ...current, [key]: error }));
-      return;
-    }
-
+  const updateEvidenceLink = (value: string) => {
     setFormData((current) => ({
       ...current,
-      evidence: { ...current.evidence, [key]: file },
+      evidence: { oneDriveFolderLink: value },
     }));
-    setErrors((current) => omitKey(current, key));
-  };
-
-  const addAdditionalEvidence = (files: FileList | File[]) => {
-    const accepted: File[] = [];
-    const rejected: string[] = [];
-    Array.from(files).forEach((file) => {
-      const error = validateFile(file);
-      if (error) rejected.push(`${file.name}: ${error}`);
-      else accepted.push(file);
-    });
-
-    setFormData((current) => ({
-      ...current,
-      evidence: {
-        ...current.evidence,
-        additionalEvidence: [...current.evidence.additionalEvidence, ...accepted],
-      },
-    }));
-
-    if (rejected.length) setErrors((current) => ({ ...current, additionalEvidence: rejected.join(" ") }));
-    else setErrors((current) => omitKey(current, "additionalEvidence"));
-  };
-
-  const removeAdditionalEvidence = (index: number) => {
-    setFormData((current) => ({
-      ...current,
-      evidence: {
-        ...current.evidence,
-        additionalEvidence: current.evidence.additionalEvidence.filter((_, itemIndex) => itemIndex !== index),
-      },
-    }));
+    setErrors((current) => omitKey(current, "oneDriveFolderLink"));
   };
 
   const downloadResponsesXlsx = async () => {
@@ -335,6 +307,10 @@ function App() {
       setSubmitMessage("Não foi possível enviar agora. Tente novamente ou acione a equipe organizadora.");
     }
   };
+
+  useEffect(() => {
+    window.localStorage.setItem(draftStorageKey, JSON.stringify(formData));
+  }, [formData]);
 
   return (
     <main className="min-h-screen overflow-hidden bg-vivo-black text-white">
@@ -414,9 +390,7 @@ function App() {
                     <EvidenceStep
                       evidence={formData.evidence}
                       errors={errors}
-                      setEvidenceFile={setEvidenceFile}
-                      addAdditionalEvidence={addAdditionalEvidence}
-                      removeAdditionalEvidence={removeAdditionalEvidence}
+                      updateEvidenceLink={updateEvidenceLink}
                     />
                   )}
                   {currentStep === 6 && (
@@ -622,7 +596,7 @@ function IdentificationStep({
                     value={participant.name}
                     onChange={(value) => updateCoParticipant(participant.id, { name: value })}
                     error={errors[`coParticipant-${participant.id}-name`]}
-                    placeholder="Equipe MIS, Qualidade, Operações FTTH"
+                    placeholder="Equipe Qualidade, Produção, Processos"
                   />
                   <TextField
                     label="E-mail, se houver"
@@ -769,6 +743,7 @@ function ResultsStep({
             selected={data.impactedProducts}
             onToggle={(value) => toggleListValue("impactedProducts", value)}
             error={errors.impactedProducts}
+            searchable
           />
           <TextArea
             label="Premissas"
@@ -795,59 +770,29 @@ function ResultsStep({
 function EvidenceStep({
   evidence,
   errors,
-  setEvidenceFile,
-  addAdditionalEvidence,
-  removeAdditionalEvidence,
+  updateEvidenceLink,
 }: {
   evidence: Evidence;
   errors: Record<string, string>;
-  setEvidenceFile: (key: "projectVideo" | "presentation", file: File | null) => void;
-  addAdditionalEvidence: (files: FileList | File[]) => void;
-  removeAdditionalEvidence: (index: number) => void;
+  updateEvidenceLink: (value: string) => void;
 }) {
   return (
     <div>
-      <StepHeading title="Evidências" description={`Anexe o vídeo obrigatório do projeto. Limite por arquivo: ${maxFileSizeMb} MB.`} />
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <FileDropzone
-          label="Upload do Vídeo"
-          accept="video/mp4,video/quicktime,video/x-msvideo,video/webm"
-          icon={<Video size={20} />}
-          fileName={evidence.projectVideo?.name}
-          error={errors.projectVideo}
-          onFiles={(files) => setEvidenceFile("projectVideo", files[0] ?? null)}
-        />
-        <FileDropzone
-          label="Apresentação PowerPoint"
-          accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
-          icon={<FileText size={20} />}
-          fileName={evidence.presentation?.name}
-          error={errors.presentation}
-          onFiles={(files) => setEvidenceFile("presentation", files[0] ?? null)}
-        />
-        <div className="md:col-span-2">
-          <FileDropzone
-            multiple
-            label="Outras evidências/resultados"
-            accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,video/*"
-            icon={<UploadCloud size={20} />}
-            fileName={evidence.additionalEvidence.length ? `${evidence.additionalEvidence.length} arquivo(s) selecionado(s)` : undefined}
-            error={errors.additionalEvidence}
-            onFiles={addAdditionalEvidence}
-          />
-          {evidence.additionalEvidence.length > 0 && (
-            <div className="mt-3 grid gap-2">
-              {evidence.additionalEvidence.map((file, index) => (
-                <div key={`${file.name}-${index}`} className="file-row flex items-center justify-between gap-3 rounded-md border border-white/10 bg-white/[0.035] px-3 py-2 text-sm text-vivo-text">
-                  <span className="truncate">{file.name}</span>
-                  <button className="icon-button" type="button" onClick={() => removeAdditionalEvidence(index)} aria-label="Remover evidência">
-                    <Trash2 size={15} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
+      <StepHeading title="Evidências" description="Crie uma pasta no OneDrive com o vídeo, a apresentação e demais evidências do projeto. Compartilhe a pasta e cole o link abaixo." />
+      <div className="mt-6 grid gap-4">
+        <div className="rounded-lg border border-vivo-neon/25 bg-vivo-purple/10 p-4 text-sm leading-6 text-vivo-text">
+          A pasta deve estar compartilhada para acesso da equipe avaliadora. Inclua nela o vídeo do projeto, a apresentação em
+          PowerPoint e qualquer evidência complementar.
         </div>
+        <TextField
+          label="Link da pasta compartilhada no OneDrive"
+          type="url"
+          icon={<LinkIcon size={16} />}
+          value={evidence.oneDriveFolderLink}
+          onChange={updateEvidenceLink}
+          error={errors.oneDriveFolderLink}
+          placeholder="https://..."
+        />
       </div>
     </div>
   );
@@ -907,9 +852,7 @@ function ReviewStep({
         <ReviewCard
           title="Evidências"
           items={[
-            ["Vídeo", data.evidence.projectVideo?.name || "Não anexado"],
-            ["PowerPoint", data.evidence.presentation?.name || "Não anexado"],
-            ["Complementares", `${data.evidence.additionalEvidence.length} arquivo(s)`],
+            ["Pasta OneDrive", data.evidence.oneDriveFolderLink],
           ]}
         />
       </div>
@@ -1074,80 +1017,62 @@ function CheckboxGroup({
   selected,
   onToggle,
   error,
+  searchable = false,
 }: {
   label: string;
   options: string[];
   selected: string[];
   onToggle: (value: string) => void;
   error?: string;
+  searchable?: boolean;
 }) {
+  const [query, setQuery] = useState("");
+  const normalizedQuery = normalizeSearch(query);
+  const visibleOptions = searchable && normalizedQuery
+    ? options.filter((option) => normalizeSearch(option).includes(normalizedQuery))
+    : options;
+
   return (
     <fieldset>
-      <legend className="field-label">{label}</legend>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {options.map((option) => (
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
+        <legend className="field-label mb-0">{label}</legend>
+        <span className="text-xs font-semibold text-vivo-lilac">{selected.length} selecionado(s)</span>
+      </div>
+      {searchable && (
+        <TextField
+          label="Buscar produto"
+          value={query}
+          onChange={setQuery}
+          placeholder="Digite para filtrar as opções"
+        />
+      )}
+      {selected.length > 0 && (
+        <div className="mt-3 flex flex-wrap gap-2">
+          {selected.map((option) => (
+            <button key={option} className="selected-chip" type="button" onClick={() => onToggle(option)}>
+              {option}
+              <XCircle size={14} />
+            </button>
+          ))}
+        </div>
+      )}
+      <div className={`mt-3 ${searchable ? "option-scroll" : "flex flex-wrap gap-2"}`}>
+        {visibleOptions.map((option) => (
           <button
             key={option}
-            className={`choice-button min-h-[62px] ${selected.includes(option) ? "selected" : ""}`}
+            className={`checkbox-option ${selected.includes(option) ? "selected" : ""}`}
             type="button"
+            aria-pressed={selected.includes(option)}
             onClick={() => onToggle(option)}
           >
             <ClipboardCheck size={18} />
             {option}
           </button>
         ))}
+        {visibleOptions.length === 0 && <p className="text-sm text-vivo-text">Nenhuma opção encontrada.</p>}
       </div>
       <FieldError message={error} />
     </fieldset>
-  );
-}
-
-function FileDropzone({
-  label,
-  accept,
-  icon,
-  fileName,
-  error,
-  compact = false,
-  multiple = false,
-  onFiles,
-}: {
-  label: string;
-  accept: string;
-  icon: React.ReactNode;
-  fileName?: string;
-  error?: string;
-  compact?: boolean;
-  multiple?: boolean;
-  onFiles: (files: File[]) => void;
-}) {
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) onFiles(Array.from(event.target.files));
-    event.target.value = "";
-  };
-
-  const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
-    event.preventDefault();
-    onFiles(Array.from(event.dataTransfer.files));
-  };
-
-  return (
-    <label className="block">
-      <span className="field-label">{label}</span>
-      <span
-        className={`dropzone ${compact ? "min-h-[118px]" : "min-h-[170px]"}`}
-        onDragOver={(event) => event.preventDefault()}
-        onDrop={handleDrop}
-      >
-        <input className="sr-only" type="file" accept={accept} multiple={multiple} onChange={handleChange} />
-        <span className="grid h-12 w-12 place-items-center rounded-md border border-vivo-neon/40 bg-vivo-purple/20 text-vivo-lilac">
-          {icon}
-        </span>
-        <span className="mt-3 block max-w-full truncate text-sm font-semibold text-white">{fileName || "Arraste ou selecione arquivo"}</span>
-        <span className="mt-1 block text-xs text-vivo-text">Clique para procurar</span>
-      </span>
-      <FieldError message={error} />
-    </label>
   );
 }
 
@@ -1203,39 +1128,22 @@ function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
-function validateFile(file: File, accept?: string[]) {
-  if (file.size > maxFileSizeMb * 1024 * 1024) return `Arquivo acima de ${maxFileSizeMb} MB.`;
-  if (accept && !accept.includes(file.type)) return "Formato de arquivo não permitido.";
-  return "";
-}
-
 function omitKey<T extends Record<string, string>>(record: T, key: string) {
   const next = { ...record };
   delete next[key];
   return next;
 }
 
-function toBase64(file: File): Promise<FilePayload> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const result = String(reader.result ?? "");
-      resolve({
-        fileName: file.name,
-        mimeType: file.type || "application/octet-stream",
-        base64: result.includes(",") ? result.split(",")[1] : result,
-      });
-    };
-    reader.onerror = () => reject(reader.error);
-    reader.readAsDataURL(file);
-  });
+function isValidUrl(value: string) {
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
 }
 
-async function optionalFile(file: File | null) {
-  return file ? toBase64(file) : null;
-}
-
-async function buildPayload(data: FormDataState) {
+function buildPayload(data: FormDataState) {
   return {
     submittedAt: new Date().toISOString(),
     source: "vivo-back-to-future-form",
@@ -1263,9 +1171,7 @@ async function buildPayload(data: FormDataState) {
       expectedResults: data.expectedResults.trim(),
     },
     evidence: {
-      projectVideo: await optionalFile(data.evidence.projectVideo),
-      presentation: await optionalFile(data.evidence.presentation),
-      additionalEvidence: await Promise.all(data.evidence.additionalEvidence.map(toBase64)),
+      oneDriveFolderLink: data.evidence.oneDriveFolderLink.trim(),
     },
   };
 }
@@ -1292,10 +1198,8 @@ async function exportResponsesXlsx(data: FormDataState) {
   ];
 
   const fileRows = [
-    ["Tipo", "Arquivo"],
-    ["Vídeo", data.evidence.projectVideo?.name || "Não anexado"],
-    ["PowerPoint", data.evidence.presentation?.name || "Não anexado"],
-    ...data.evidence.additionalEvidence.map((file, index) => [`Evidência complementar ${index + 1}`, file.name]),
+    ["Tipo", "Link"],
+    ["Pasta OneDrive", data.evidence.oneDriveFolderLink],
   ];
 
   await writeXlsxFile([
@@ -1329,6 +1233,38 @@ function slugify(value: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "")
     .slice(0, 60);
+}
+
+function normalizeSearch(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function loadSavedDraft(): FormDataState {
+  if (typeof window === "undefined") return initialData;
+
+  try {
+    const saved = window.localStorage.getItem(draftStorageKey);
+    if (!saved) return initialData;
+    return normalizeDraft(JSON.parse(saved) as Partial<FormDataState>);
+  } catch {
+    return initialData;
+  }
+}
+
+function normalizeDraft(value: Partial<FormDataState>): FormDataState {
+  return {
+    ...initialData,
+    ...value,
+    coParticipants: Array.isArray(value.coParticipants) ? value.coParticipants : initialData.coParticipants,
+    strategicImpacts: Array.isArray(value.strategicImpacts) ? value.strategicImpacts : initialData.strategicImpacts,
+    impactedProducts: Array.isArray(value.impactedProducts) ? value.impactedProducts : initialData.impactedProducts,
+    evidence: {
+      oneDriveFolderLink: value.evidence?.oneDriveFolderLink ?? "",
+    },
+  };
 }
 
 export default App;

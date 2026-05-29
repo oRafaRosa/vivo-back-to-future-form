@@ -11,14 +11,13 @@ Modelo atualizado a partir do arquivo `Atualizacao Formulario Projetos.docx`.
 **Tipo:** dropdown
 **Obrigatório:** sim
 
-Opções sugeridas:
+Opções:
 
 - Gerência de Serviços ao Cliente Centralizado
-- Operações FTTH
 - Qualidade
-- MIS / Analytics
-- Atendimento
-- Outra área
+- Produção
+- Projetos e TI
+- Processos
 
 ## 3. Líder do Projeto
 **Tipo:** resposta curta
@@ -66,16 +65,15 @@ Opções:
 **Tipo:** caixa de seleção
 **Obrigatório:** sim
 
-Opções sugeridas:
+Opções:
 
 - Produtividade
-- Eficiência Operacional
+- Qualidade
+- Eficiência
+- Processos
+- Experiência do Cliente
 - IA
 - Automação
-- Experiência do Cliente
-- Ganho financeiro
-- Qualidade
-- Escalabilidade
 
 ## 11. Situação Atual (AS IS)
 **Tipo:** parágrafo
@@ -96,15 +94,30 @@ Opções sugeridas:
 **Tipo:** caixa de seleção
 **Obrigatório:** sim
 
-Opções sugeridas:
+Opções:
 
+- Cobre
 - Fibra
-- IPTV
-- Voz IMS
-- B2B
-- B2C
 - Móvel
-- Outros
+- Voz – TDM (v5)
+- Voz – TDM (h248)
+- Voz – IMS (V5.2)
+- Voz – IMS (H248)
+- Voz – IMS
+- Voip/SIP
+- Projetos especiais
+- Banda Larga Fibra
+- Banda Larga Cobre
+- B2B Dados Avançado
+- Pré-Pago
+- Pós-pago
+- Controle
+- Híbrida
+- DTH
+- IPTV
+- B2C
+- B2B
+- Atacado
 
 ## 15. Premissas
 **Tipo:** parágrafo
@@ -118,18 +131,11 @@ Campos não aplicáveis podem ser preenchidos com `N/A`.
 **Limite:** máximo 700 caracteres
 **Obrigatório:** sim
 
-## 17. Upload do Vídeo
-**Tipo:** upload de arquivo
-**Regra:** vídeo de até 3 minutos
+## 17. Link da pasta compartilhada no OneDrive
+**Tipo:** URL
 **Obrigatório:** sim
 
-## 18. Apresentação PowerPoint
-**Tipo:** upload de arquivo
-**Obrigatório:** não
+Orientação: o usuário deve criar uma pasta no OneDrive com o vídeo, a apresentação PowerPoint e demais evidências do projeto. A pasta precisa estar compartilhada para acesso da equipe avaliadora, e o link compartilhado deve ser informado no formulário.
 
-## 19. Outras evidências/resultados
-**Tipo:** múltiplos uploads
-**Obrigatório:** não
-
-## 20. Exportação XLSX
-Ao final da revisão e na tela de confirmação, o usuário pode baixar um arquivo `.xlsx` com as respostas organizadas em abas de respostas e anexos.
+## 18. Exportação XLSX
+Ao final da revisão e na tela de confirmação, o usuário pode baixar um arquivo `.xlsx` com as respostas organizadas.

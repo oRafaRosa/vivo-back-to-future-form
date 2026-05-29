@@ -40,41 +40,17 @@ Campos sugeridos:
 - ProdutosImpactados
 - Premissas
 - ResultadosEsperados
+- LinkPastaOneDrive
 - StatusProcessamento
 - DataEnvio
 
-### 3. Criar pasta na biblioteca
+### 3. Atualizar status
 
-Criar pasta na Document Library `EvidenciasProjetos` usando o ID do item criado.
+Após criar o item:
 
-Padrão sugerido:
-
-```text
-/EvidenciasProjetos/Projeto-{ID}-{NomeProjetoSanitizado}/
-```
-
-Subpastas:
-
-```text
-/evidencias/
-/video/
-/powerpoint/
-```
-
-### 4. Salvar evidências
-
-Salvar vídeo, PowerPoint e evidências adicionais nas respectivas pastas.
-
-### 5. Atualizar item da lista
-
-Atualizar o item criado com:
-
-- LinkVideo
-- LinkPowerPoint
-- LinksEvidenciasAdicionais
 - StatusProcessamento = Concluído
 
-### 6. Responder ao React
+### 4. Responder ao React
 
 Retornar status `200` com:
 

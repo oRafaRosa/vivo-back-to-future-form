@@ -4,15 +4,15 @@ Aplicação React + Vite para inscrição de projetos internos, com tema futuris
 
 ## Objetivo
 
-Criar uma experiência premium para inscrição de projetos internos, coletando área responsável, liderança, coparticipantes, ganho financeiro, descrição do projeto, impacto estratégico, produtos impactados, resultados esperados e evidências como vídeos e apresentações.
+Criar uma experiência premium para inscrição de projetos internos, coletando área responsável, liderança, coparticipantes, ganho financeiro, descrição do projeto, impacto estratégico, produtos impactados, resultados esperados e o link da pasta compartilhada no OneDrive com as evidências.
 
 ## Arquitetura
 
-React + Vite -> Power Automate -> SharePoint List + SharePoint Document Library
+React + Vite -> Power Automate -> SharePoint List
 
 - SharePoint List: dados estruturados da inscrição.
-- Document Library: vídeos, apresentações e evidências.
-- Power Automate: camada de recebimento, gravação e organização dos arquivos.
+- Power Automate: camada de recebimento e gravação dos dados.
+- OneDrive: armazenamento das evidências em pasta compartilhada pelo usuário.
 
 ## Como rodar
 
@@ -29,7 +29,7 @@ npm run build
 
 ## Exportação XLSX
 
-Na etapa de revisão e na confirmação final, o usuário pode baixar um arquivo `.xlsx` com as respostas organizadas em abas de respostas e anexos. O formulário não coleta mais foto de perfil dos participantes.
+Na etapa de revisão e na confirmação final, o usuário pode baixar um arquivo `.xlsx` com as respostas organizadas. O formulário não coleta foto de perfil nem armazena vídeos ou apresentações.
 
 ## Variáveis de ambiente
 
@@ -37,7 +37,6 @@ Crie um arquivo `.env` local usando `.env.example` como referência:
 
 ```env
 VITE_POWER_AUTOMATE_ENDPOINT=
-VITE_MAX_FILE_SIZE_MB=25
 VITE_ALLOWED_EMAIL_DOMAIN=telefonica.com
 ```
 
