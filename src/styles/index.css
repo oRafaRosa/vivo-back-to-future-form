@@ -116,6 +116,7 @@ label:focus-within .dropzone {
 .consent-card,
 .file-row {
   position: relative;
+  isolation: isolate;
   transition:
     transform 0.24s ease,
     border-color 0.24s ease,
@@ -131,15 +132,15 @@ label:focus-within .dropzone {
 .consent-card::after {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: 1px;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.12), transparent 44%);
+  background:
+    radial-gradient(circle at 18% 0%, rgba(192, 132, 252, 0.12), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 42%, rgba(155, 45, 255, 0.08));
+  mix-blend-mode: screen;
   opacity: 0;
-  transform: translateX(-42%);
-  transition:
-    opacity 0.24s ease,
-    transform 0.55s ease;
+  transition: opacity 0.24s ease;
 }
 
 .interactive-panel:hover,
@@ -158,8 +159,7 @@ label:focus-within .dropzone {
 .participant-card:hover::after,
 .review-card:hover::after,
 .consent-card:hover::after {
-  opacity: 1;
-  transform: translateX(46%);
+  opacity: 0.9;
 }
 
 .logo-hover {
