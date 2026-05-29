@@ -461,13 +461,13 @@ function BackgroundScene() {
 }
 
 function VivinhoProgress({ progress }: { progress: number }) {
+  const clipped = Math.max(0, Math.min(100, 100 - progress));
+
   return (
     <div className="vivinho-progress" aria-hidden="true">
       <div className="vivinho-progress-orbit" />
       <img className="vivinho-progress-outline" src={vivinhoLogo} alt="" />
-      <div className="vivinho-progress-fill" style={{ height: `${progress}%` }}>
-        <img src={vivinhoLogo} alt="" />
-      </div>
+      <img className="vivinho-progress-fill" src={vivinhoLogo} alt="" style={{ clipPath: `inset(${clipped}% 0 0 0)` }} />
       <span className="vivinho-progress-label">{Math.round(progress)}%</span>
     </div>
   );

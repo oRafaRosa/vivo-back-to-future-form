@@ -226,7 +226,7 @@ label:focus-within .dropzone {
 }
 
 .vivinho-progress-outline,
-.vivinho-progress-fill img {
+.vivinho-progress-fill {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -235,7 +235,7 @@ label:focus-within .dropzone {
 }
 
 .vivinho-progress-outline {
-  opacity: 0.32;
+  opacity: 0.22;
   filter:
     grayscale(1)
     brightness(0)
@@ -245,17 +245,7 @@ label:focus-within .dropzone {
 }
 
 .vivinho-progress-fill {
-  position: absolute;
-  inset-inline: 0;
-  bottom: 0;
-  overflow: hidden;
-  transition: height 0.32s ease;
-}
-
-.vivinho-progress-fill img {
-  bottom: 0;
-  top: auto;
-  height: clamp(64px, 7vw, 104px);
+  transition: clip-path 0.32s ease;
   filter: drop-shadow(0 0 14px rgba(192, 132, 252, 0.82)) saturate(1.12);
 }
 
