@@ -430,7 +430,7 @@ function App() {
                   </button>
                 ) : (
                   <button className="btn-primary" type="button" onClick={submitForm} disabled={!submissionEnabled || submitState === "sending"}>
-                    {submitState === "sending" ? "Enviando..." : "Envio desabilitado"}
+                    {submitState === "sending" ? "Enviando..." : "Enviar inscrição"}
                     <Send size={18} />
                   </button>
                 )}
