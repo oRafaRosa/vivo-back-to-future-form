@@ -24,7 +24,6 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import writeXlsxFile from "write-excel-file/browser";
 import vivinhoLogo from "./assets/media/vivinho-logo.png";
-import deloreanCar from "./assets/media/delorean-car.png";
 import neonClock from "./assets/media/neon-clock.png";
 import ponteEstaiada from "./assets/media/ponte-estaiada.png";
 
@@ -63,6 +62,7 @@ const endpoint = import.meta.env.VITE_POWER_AUTOMATE_ENDPOINT as string | undefi
 const allowedEmailDomain = (import.meta.env.VITE_ALLOWED_EMAIL_DOMAIN ?? "telefonica.com") as string;
 const draftStorageKey = "vivo-back-to-future-form-draft-v2";
 const submissionEnabled = false;
+const carImage = "/images/carro.png";
 
 const responsibleAreas = [
   "Gerência de Serviços ao Cliente Centralizado",
@@ -344,7 +344,7 @@ function App() {
 
             <div className="side-visual relative mt-10 h-64">
               <div className="time-ring" />
-              <img className="car-pulse absolute bottom-0 left-1/2 w-[125%] max-w-none -translate-x-1/2 drop-shadow-[0_0_34px_rgba(155,45,255,0.75)]" src={deloreanCar} alt="Carro futurista com fundo transparente" />
+              <img className="car-pulse absolute bottom-0 left-1/2 w-[125%] max-w-none -translate-x-1/2 drop-shadow-[0_0_34px_rgba(155,45,255,0.75)]" src={carImage} alt="Carro futurista com fundo transparente" />
             </div>
 
             <div className="mt-8 space-y-3">
