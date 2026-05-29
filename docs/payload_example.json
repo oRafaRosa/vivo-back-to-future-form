@@ -1,27 +1,30 @@
 {
   "submittedAt": "2026-06-08T12:00:00.000Z",
   "source": "vivo-back-to-future-form",
-  "participants": [
-    {
-      "name": "Gabriela Paula da Silva",
-      "email": "gabriela.psilva@telefonica.com",
-      "photo": {
-        "fileName": "gabriela.png",
-        "mimeType": "image/png",
-        "base64": "BASE64_AQUI"
+  "identification": {
+    "projectName": "Smart Repair | Redução Inteligente de Reparos em Campo",
+    "responsibleArea": "Gerência de Serviços ao Cliente Centralizado",
+    "projectLeader": "Gabriela Paula da Silva",
+    "leaderEmail": "gabriela.psilva@telefonica.com",
+    "coParticipants": [
+      {
+        "name": "Equipe MIS",
+        "email": ""
       }
-    }
-  ],
+    ]
+  },
   "project": {
-    "projectName": "Nome do Projeto",
-    "startDate": "2026-01",
-    "problemSolved": "Descrição objetiva do problema resolvido.",
-    "strategicGoal": "Meta estratégica da VP apoiada pelo projeto.",
-    "resultsGenerated": "Resultados e impactos gerados.",
-    "usesTechnology": true,
-    "technologyDescription": "Descrição do uso de IA, automação ou tecnologia.",
-    "purplePassion": "Opção selecionada",
-    "expansionPotential": "Descrição do potencial de expansão."
+    "hasFinancialGain": true,
+    "financialGainDescription": "Redução estimada de custos operacionais relacionados a deslocamentos técnicos e retrabalho.",
+    "projectObjective": "Reduzir o volume de reparos em campo através da identificação automatizada de ofensores operacionais.",
+    "projectDescription": "O projeto automatiza análises operacionais utilizando SQL Server e Power BI para identificar reincidências e ofensores.",
+    "strategicImpacts": ["Produtividade", "Eficiência Operacional", "IA", "Automação", "Experiência do Cliente"],
+    "currentSituation": "Atualmente as análises são realizadas manualmente através de diferentes bases e planilhas.",
+    "futureSituation": "Os indicadores serão monitorados automaticamente em dashboard único com visão executiva.",
+    "projectBenefits": "Redução de reparos, aumento de produtividade e melhoria da experiência do cliente.",
+    "impactedProducts": ["Fibra", "IPTV", "Voz IMS", "B2B", "B2C"],
+    "assumptions": "Disponibilidade das bases operacionais e manutenção dos acessos SQL.",
+    "expectedResults": "Redução de até 15% no volume de reparos em campo."
   },
   "evidence": {
     "projectVideo": {

@@ -1,18 +1,18 @@
-# Formulario de Inscricao de Projetos - VIVO | De Volta Para o Futuro
+# Formulário de Inscrição de Projetos - Vivo | De Volta Para o Futuro
 
-Aplicacao React + Vite para inscricao de projetos internos, com tema futurista inspirado em "De Volta Para o Futuro", VIVO, tecnologia, IA e roxo neon.
+Aplicação React + Vite para inscrição de projetos internos, com tema futurista inspirado em "De Volta Para o Futuro", Vivo, tecnologia, IA e roxo neon.
 
 ## Objetivo
 
-Criar uma experiencia premium para inscricao de projetos internos, coletando informacoes dos participantes, descricao do projeto, resultados, uso de tecnologia/IA/automacao e evidencias como imagens, videos e apresentacoes.
+Criar uma experiência premium para inscrição de projetos internos, coletando área responsável, liderança, coparticipantes, ganho financeiro, descrição do projeto, impacto estratégico, produtos impactados, resultados esperados e evidências como vídeos e apresentações.
 
 ## Arquitetura
 
 React + Vite -> Power Automate -> SharePoint List + SharePoint Document Library
 
-- SharePoint List: dados estruturados da inscricao.
-- Document Library: fotos dos participantes e evidencias.
-- Power Automate: camada de recebimento, gravacao e organizacao dos arquivos.
+- SharePoint List: dados estruturados da inscrição.
+- Document Library: vídeos, apresentações e evidências.
+- Power Automate: camada de recebimento, gravação e organização dos arquivos.
 
 ## Como rodar
 
@@ -27,9 +27,13 @@ npm run dev
 npm run build
 ```
 
-## Variaveis de ambiente
+## Exportação XLSX
 
-Crie um arquivo `.env` local usando `.env.example` como referencia:
+Na etapa de revisão e na confirmação final, o usuário pode baixar um arquivo `.xlsx` com as respostas organizadas em abas de respostas e anexos. O formulário não coleta mais foto de perfil dos participantes.
+
+## Variáveis de ambiente
+
+Crie um arquivo `.env` local usando `.env.example` como referência:
 
 ```env
 VITE_POWER_AUTOMATE_ENDPOINT=
@@ -37,35 +41,35 @@ VITE_MAX_FILE_SIZE_MB=25
 VITE_ALLOWED_EMAIL_DOMAIN=telefonica.com
 ```
 
-Nao commite endpoint real do Power Automate. Para GitHub Pages com Actions, configure `VITE_POWER_AUTOMATE_ENDPOINT` como secret do repositorio.
+Não commite endpoint real do Power Automate. Para GitHub Pages com Actions, configure `VITE_POWER_AUTOMATE_ENDPOINT` como secret do repositório.
 
-## Publicacao no GitHub Pages
+## Publicação no GitHub Pages
 
-O projeto inclui `.github/workflows/pages.yml`. Depois de enviar o repositorio para o GitHub:
+O projeto inclui `.github/workflows/pages.yml`. Depois de enviar o repositório para o GitHub:
 
 1. Abra `Settings > Pages`.
 2. Em `Build and deployment`, selecione `GitHub Actions`.
 3. Configure o secret `VITE_POWER_AUTOMATE_ENDPOINT`, se o envio real estiver habilitado.
-4. Faca push na branch `main`.
+4. Faça push na branch `main`.
 
-Tambem existe o script:
+Também existe o script:
 
 ```bash
 npm run deploy
 ```
 
-Esse script publica a pasta `dist` via branch `gh-pages`, desde que o repositorio remoto `origin` esteja configurado.
+Esse script publica a pasta `dist` via branch `gh-pages`, desde que o repositório remoto `origin` esteja configurado.
 
 ## Assets
 
-Os assets finais usados pelo app estao em `src/assets/media/`:
+Os assets finais usados pelo app estão em `src/assets/media/`:
 
 - `vivinho-logo.png`
 - `delorean-car.png`
 
 As imagens originais permanecem em `public/images/`.
 
-## Seguranca
+## Segurança
 
 Este projeto foi pensado para evitar armazenamento em banco externo. O destino recomendado segue o ambiente corporativo homologado.
 

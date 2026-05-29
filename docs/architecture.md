@@ -11,13 +11,14 @@ Power Automate HTTP Trigger
   ↓
 SharePoint List: item principal da inscrição
   ↓
-SharePoint Document Library: fotos e evidências
+SharePoint Document Library: vídeos, apresentações e evidências
   ↓
 SharePoint List atualizada com links dos arquivos
 ```
 
 ## Por que não usar Excel como banco principal
-Excel Online pode funcionar para MVP muito simples, mas não é o melhor destino para arquivos, múltiplos participantes e evidências.
+
+Excel Online pode funcionar para MVP muito simples, mas não é o melhor destino para arquivos e evidências.
 
 Riscos do Excel como base principal:
 
@@ -28,10 +29,11 @@ Riscos do Excel como base principal:
 - Menos escalável
 
 ## Recomendação
+
 Usar:
 
 - SharePoint List para os dados estruturados.
-- SharePoint Document Library para arquivos.
+- SharePoint Document Library para arquivos de evidência.
 - Exportação para Excel/Power BI apenas como saída ou relatório.
 
 ## Variáveis de ambiente
@@ -45,4 +47,5 @@ VITE_ALLOWED_EMAIL_DOMAIN=telefonica.com
 ```
 
 ## Payload
+
 Ver `docs/payload_example.json`.

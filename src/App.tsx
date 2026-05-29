@@ -2,14 +2,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertTriangle,
   Bot,
-  CalendarDays,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
+  ClipboardCheck,
+  Download,
   FileCheck2,
   FileText,
   Gauge,
-  ImagePlus,
   Mail,
   Plus,
   Rocket,
@@ -22,17 +22,16 @@ import {
   XCircle,
 } from "lucide-react";
 import { ChangeEvent, DragEvent, useMemo, useState } from "react";
+import writeXlsxFile from "write-excel-file/browser";
 import vivinhoLogo from "./assets/media/vivinho-logo.png";
 import deloreanCar from "./assets/media/delorean-car.png";
 import neonClock from "./assets/media/neon-clock.png";
 import ponteEstaiada from "./assets/media/ponte-estaiada.png";
 
-type Participant = {
+type CoParticipant = {
   id: string;
   name: string;
   email: string;
-  photo: File | null;
-  photoPreview: string;
 };
 
 type Evidence = {
@@ -42,16 +41,22 @@ type Evidence = {
 };
 
 type FormDataState = {
-  participants: Participant[];
   projectName: string;
-  startDate: string;
-  problemSolved: string;
-  strategicGoal: string;
-  resultsGenerated: string;
-  usesTechnology: "yes" | "no" | "";
-  technologyDescription: string;
-  purplePassion: string;
-  expansionPotential: string;
+  responsibleArea: string;
+  projectLeader: string;
+  leaderEmail: string;
+  coParticipants: CoParticipant[];
+  hasFinancialGain: "yes" | "no" | "";
+  financialGainDescription: string;
+  projectObjective: string;
+  projectDescription: string;
+  strategicImpacts: string[];
+  currentSituation: string;
+  futureSituation: string;
+  projectBenefits: string;
+  impactedProducts: string[];
+  assumptions: string;
+  expectedResults: string;
   evidence: Evidence;
   privacyAccepted: boolean;
 };
@@ -66,25 +71,51 @@ const endpoint = import.meta.env.VITE_POWER_AUTOMATE_ENDPOINT as string | undefi
 const maxFileSizeMb = Number(import.meta.env.VITE_MAX_FILE_SIZE_MB ?? 25);
 const allowedEmailDomain = (import.meta.env.VITE_ALLOWED_EMAIL_DOMAIN ?? "telefonica.com") as string;
 
-const initialParticipant = (): Participant => ({
+const responsibleAreas = [
+  "Gerência de Serviços ao Cliente Centralizado",
+  "Operações FTTH",
+  "Qualidade",
+  "MIS / Analytics",
+  "Atendimento",
+  "Outra área",
+];
+
+const strategicImpactOptions = [
+  "Produtividade",
+  "Eficiência Operacional",
+  "IA",
+  "Automação",
+  "Experiência do Cliente",
+  "Ganho financeiro",
+  "Qualidade",
+  "Escalabilidade",
+];
+
+const impactedProductOptions = ["Fibra", "IPTV", "Voz IMS", "B2B", "B2C", "Móvel", "Outros"];
+
+const initialCoParticipant = (): CoParticipant => ({
   id: crypto.randomUUID(),
   name: "",
   email: "",
-  photo: null,
-  photoPreview: "",
 });
 
 const initialData: FormDataState = {
-  participants: [initialParticipant()],
   projectName: "",
-  startDate: "",
-  problemSolved: "",
-  strategicGoal: "",
-  resultsGenerated: "",
-  usesTechnology: "",
-  technologyDescription: "",
-  purplePassion: "",
-  expansionPotential: "",
+  responsibleArea: "",
+  projectLeader: "",
+  leaderEmail: "",
+  coParticipants: [],
+  hasFinancialGain: "",
+  financialGainDescription: "",
+  projectObjective: "",
+  projectDescription: "",
+  strategicImpacts: [],
+  currentSituation: "",
+  futureSituation: "",
+  projectBenefits: "",
+  impactedProducts: [],
+  assumptions: "",
+  expectedResults: "",
   evidence: {
     projectVideo: null,
     presentation: null,
@@ -93,21 +124,12 @@ const initialData: FormDataState = {
   privacyAccepted: false,
 };
 
-const purplePassions = [
-  "O tempo do cliente é agora",
-  "Gente é a nossa melhor tecnologia",
-  "Ser curioso pega bem",
-  "Dá para ser mais simples",
-  "Resultado é comigo",
-];
-
 const steps = [
   { title: "Boas-vindas", icon: Rocket },
-  { title: "Participantes", icon: Users },
-  { title: "Informações do projeto", icon: FileText },
-  { title: "Estratégia e resultados", icon: Gauge },
-  { title: "Tecnologia, IA e automação", icon: Bot },
-  { title: "Cultura e expansão", icon: Sparkles },
+  { title: "Identificação", icon: Users },
+  { title: "Projeto", icon: FileText },
+  { title: "Impacto estratégico", icon: Gauge },
+  { title: "Cenário e resultados", icon: Bot },
   { title: "Evidências", icon: UploadCloud },
   { title: "Revisão e envio", icon: FileCheck2 },
   { title: "Confirmação", icon: CheckCircle2 },
@@ -135,35 +157,45 @@ function App() {
     }
 
     if (step === 1) {
-      formData.participants.forEach((participant, index) => {
-        if (!participant.name.trim()) nextErrors[`participant-${participant.id}-name`] = "Informe o nome.";
-        if (!isValidEmail(participant.email)) nextErrors[`participant-${participant.id}-email`] = "Informe um e-mail válido.";
-        if (!participant.email.toLowerCase().endsWith(`@${allowedEmailDomain.toLowerCase()}`)) {
-          nextErrors[`participant-${participant.id}-email`] = `Use e-mail corporativo @${allowedEmailDomain}.`;
+      requireText(nextErrors, "projectName", formData.projectName, 80);
+      requireText(nextErrors, "responsibleArea", formData.responsibleArea);
+      requireText(nextErrors, "projectLeader", formData.projectLeader, 60);
+      if (!isValidEmail(formData.leaderEmail)) nextErrors.leaderEmail = "Informe um e-mail válido.";
+      if (formData.leaderEmail && !formData.leaderEmail.toLowerCase().endsWith(`@${allowedEmailDomain.toLowerCase()}`)) {
+        nextErrors.leaderEmail = `Use e-mail corporativo @${allowedEmailDomain}.`;
+      }
+      formData.coParticipants.forEach((participant) => {
+        requireText(nextErrors, `coParticipant-${participant.id}-name`, participant.name, 60);
+        if (participant.email && !isValidEmail(participant.email)) {
+          nextErrors[`coParticipant-${participant.id}-email`] = "Informe um e-mail válido.";
         }
-        if (!participant.photo) nextErrors[`participant-${participant.id}-photo`] = `Inclua a foto do participante ${index + 1}.`;
       });
     }
 
     if (step === 2) {
-      requireText(nextErrors, "projectName", formData.projectName);
-      requireText(nextErrors, "startDate", formData.startDate);
-      requireText(nextErrors, "problemSolved", formData.problemSolved);
+      requireText(nextErrors, "hasFinancialGain", formData.hasFinancialGain);
+      if (formData.hasFinancialGain === "yes") {
+        requireText(nextErrors, "financialGainDescription", formData.financialGainDescription, 300);
+      }
+      requireText(nextErrors, "projectObjective", formData.projectObjective, 500);
+      requireText(nextErrors, "projectDescription", formData.projectDescription, 2000);
     }
 
     if (step === 3) {
-      requireText(nextErrors, "strategicGoal", formData.strategicGoal);
-      requireText(nextErrors, "resultsGenerated", formData.resultsGenerated);
+      if (formData.strategicImpacts.length === 0) nextErrors.strategicImpacts = "Selecione pelo menos um impacto estratégico.";
+      requireText(nextErrors, "currentSituation", formData.currentSituation, 700);
+      requireText(nextErrors, "futureSituation", formData.futureSituation, 700);
     }
 
     if (step === 4) {
-      requireText(nextErrors, "usesTechnology", formData.usesTechnology);
-      if (formData.usesTechnology === "yes") requireText(nextErrors, "technologyDescription", formData.technologyDescription);
+      requireText(nextErrors, "projectBenefits", formData.projectBenefits, 700);
+      if (formData.impactedProducts.length === 0) nextErrors.impactedProducts = "Selecione pelo menos um produto impactado.";
+      requireText(nextErrors, "expectedResults", formData.expectedResults, 700);
+      if (formData.assumptions.length > 500) nextErrors.assumptions = "Use no máximo 500 caracteres.";
     }
 
-    if (step === 5) {
-      requireText(nextErrors, "purplePassion", formData.purplePassion);
-      requireText(nextErrors, "expansionPotential", formData.expansionPotential);
+    if (step === 5 && !formData.evidence.projectVideo) {
+      nextErrors.projectVideo = "Anexe o vídeo do projeto.";
     }
 
     setErrors(nextErrors);
@@ -180,53 +212,45 @@ function App() {
     setCurrentStep((step) => Math.max(step - 1, 0));
   };
 
-  const addParticipant = () => {
+  const addCoParticipant = () => {
     setFormData((current) => ({
       ...current,
-      participants: [...current.participants, initialParticipant()],
+      coParticipants: [...current.coParticipants, initialCoParticipant()],
     }));
   };
 
-  const removeParticipant = (id: string) => {
-    setFormData((current) => {
-      const participant = current.participants.find((item) => item.id === id);
-      if (participant?.photoPreview) URL.revokeObjectURL(participant.photoPreview);
-
-      return {
-        ...current,
-        participants:
-          current.participants.length === 1 ? current.participants : current.participants.filter((item) => item.id !== id),
-      };
-    });
-  };
-
-  const updateParticipant = (id: string, patch: Partial<Participant>) => {
+  const removeCoParticipant = (id: string) => {
     setFormData((current) => ({
       ...current,
-      participants: current.participants.map((participant) =>
+      coParticipants: current.coParticipants.filter((participant) => participant.id !== id),
+    }));
+  };
+
+  const updateCoParticipant = (id: string, patch: Partial<CoParticipant>) => {
+    setFormData((current) => ({
+      ...current,
+      coParticipants: current.coParticipants.map((participant) =>
         participant.id === id ? { ...participant, ...patch } : participant,
       ),
     }));
   };
 
-  const setParticipantPhoto = (participant: Participant, file: File | null) => {
-    if (!file) return;
-    const error = validateFile(file, ["image/png", "image/jpeg", "image/webp"]);
-    if (error) {
-      setErrors((current) => ({ ...current, [`participant-${participant.id}-photo`]: error }));
-      return;
-    }
-
-    if (participant.photoPreview) URL.revokeObjectURL(participant.photoPreview);
-    updateParticipant(participant.id, { photo: file, photoPreview: URL.createObjectURL(file) });
-    setErrors((current) => omitKey(current, `participant-${participant.id}-photo`));
+  const toggleListValue = <K extends "strategicImpacts" | "impactedProducts">(key: K, value: string) => {
+    setFormData((current) => {
+      const items = current[key];
+      return {
+        ...current,
+        [key]: items.includes(value) ? items.filter((item) => item !== value) : [...items, value],
+      };
+    });
+    setErrors((current) => omitKey(current, key));
   };
 
   const setEvidenceFile = (key: "projectVideo" | "presentation", file: File | null) => {
     if (!file) return;
     const accept =
       key === "projectVideo"
-        ? ["video/mp4", "video/quicktime", "video/x-msvideo"]
+        ? ["video/mp4", "video/quicktime", "video/x-msvideo", "video/webm"]
         : ["application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.ms-powerpoint"];
     const error = validateFile(file, accept);
     if (error) {
@@ -270,6 +294,10 @@ function App() {
         additionalEvidence: current.evidence.additionalEvidence.filter((_, itemIndex) => itemIndex !== index),
       },
     }));
+  };
+
+  const downloadResponsesXlsx = async () => {
+    await exportResponsesXlsx(formData);
   };
 
   const submitForm = async () => {
@@ -322,7 +350,7 @@ function App() {
             </div>
           </div>
           <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-vivo-text">
-            De Volta Para o Futuro
+            Back to the Future | Reunião de Resultados
           </div>
         </header>
 
@@ -330,8 +358,8 @@ function App() {
           <aside className="interactive-panel relative hidden overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-5 shadow-panel backdrop-blur-xl lg:block">
             <div className="absolute inset-x-0 top-24 h-1 bg-gradient-to-r from-transparent via-vivo-neon to-transparent opacity-80" />
             <div className="relative">
-              <p className="text-sm uppercase tracking-[0.24em] text-vivo-lilac">Vitrine de projetos</p>
-              <h2 className="mt-3 text-4xl font-black leading-tight">CONSTRUIR HOJE, EVOLUIR SEMPRE</h2>
+              <p className="text-sm uppercase tracking-[0.24em] text-vivo-lilac">Vitrine executiva</p>
+              <h2 className="mt-3 text-4xl font-black leading-tight">PROJETOS QUE ACELERAM O FUTURO</h2>
             </div>
 
             <div className="side-visual relative mt-10 h-64">
@@ -370,20 +398,19 @@ function App() {
                 >
                   {currentStep === 0 && <WelcomeStep data={formData} errors={errors} updateField={updateField} />}
                   {currentStep === 1 && (
-                    <ParticipantsStep
-                      participants={formData.participants}
+                    <IdentificationStep
+                      data={formData}
                       errors={errors}
-                      addParticipant={addParticipant}
-                      removeParticipant={removeParticipant}
-                      updateParticipant={updateParticipant}
-                      setParticipantPhoto={setParticipantPhoto}
+                      updateField={updateField}
+                      addCoParticipant={addCoParticipant}
+                      removeCoParticipant={removeCoParticipant}
+                      updateCoParticipant={updateCoParticipant}
                     />
                   )}
                   {currentStep === 2 && <ProjectStep data={formData} errors={errors} updateField={updateField} />}
-                  {currentStep === 3 && <StrategyStep data={formData} errors={errors} updateField={updateField} />}
-                  {currentStep === 4 && <TechnologyStep data={formData} errors={errors} updateField={updateField} />}
-                  {currentStep === 5 && <CultureStep data={formData} errors={errors} updateField={updateField} />}
-                  {currentStep === 6 && (
+                  {currentStep === 3 && <StrategicImpactStep data={formData} errors={errors} updateField={updateField} toggleListValue={toggleListValue} />}
+                  {currentStep === 4 && <ResultsStep data={formData} errors={errors} updateField={updateField} toggleListValue={toggleListValue} />}
+                  {currentStep === 5 && (
                     <EvidenceStep
                       evidence={formData.evidence}
                       errors={errors}
@@ -392,8 +419,21 @@ function App() {
                       removeAdditionalEvidence={removeAdditionalEvidence}
                     />
                   )}
-                  {currentStep === 7 && <ReviewStep data={formData} submitState={submitState} submitMessage={submitMessage} />}
-                  {currentStep === 8 && <ConfirmationStep submitState={submitState} submitMessage={submitMessage} />}
+                  {currentStep === 6 && (
+                    <ReviewStep
+                      data={formData}
+                      submitState={submitState}
+                      submitMessage={submitMessage}
+                      onDownloadXlsx={downloadResponsesXlsx}
+                    />
+                  )}
+                  {currentStep === 7 && (
+                    <ConfirmationStep
+                      submitState={submitState}
+                      submitMessage={submitMessage}
+                      onDownloadXlsx={downloadResponsesXlsx}
+                    />
+                  )}
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -477,8 +517,11 @@ function WelcomeStep({
   return (
     <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
       <div>
-        <p className="eyebrow">VIVO | De Volta Para o Futuro</p>
-        <h2 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Inscreva o projeto que move a operação para o futuro.</h2>
+        <p className="eyebrow">VIVO | Back to the Future</p>
+        <h2 className="mt-4 text-4xl font-black leading-tight sm:text-5xl">Inscreva o projeto que acelera os resultados da operação.</h2>
+        <p className="mt-5 max-w-2xl text-vivo-text">
+          Preencha respostas objetivas, estratégicas e mensuráveis. Campos não aplicáveis podem ser preenchidos com N/A.
+        </p>
         <label className="consent-card mt-7 flex cursor-pointer items-start gap-3 rounded-lg border border-white/10 bg-white/[0.04] p-4 text-sm text-vivo-text">
           <input
             className="mt-1 h-4 w-4 accent-vivo-neon"
@@ -487,8 +530,8 @@ function WelcomeStep({
             onChange={(event) => updateField("privacyAccepted", event.target.checked)}
           />
           <span>
-            Estou ciente de que os dados informados serão usados apenas para inscrição, avaliação e organização dos projetos
-            internos.
+            Estou ciente de que os dados informados serão usados apenas para inscrição, avaliação executiva e organização dos
+            projetos internos.
           </span>
         </label>
         <FieldError message={errors.privacyAccepted} />
@@ -503,68 +546,99 @@ function WelcomeStep({
   );
 }
 
-function ParticipantsStep({
-  participants,
+function IdentificationStep({
+  data,
   errors,
-  addParticipant,
-  removeParticipant,
-  updateParticipant,
-  setParticipantPhoto,
-}: {
-  participants: Participant[];
-  errors: Record<string, string>;
-  addParticipant: () => void;
-  removeParticipant: (id: string) => void;
-  updateParticipant: (id: string, patch: Partial<Participant>) => void;
-  setParticipantPhoto: (participant: Participant, file: File | null) => void;
+  updateField,
+  addCoParticipant,
+  removeCoParticipant,
+  updateCoParticipant,
+}: StepProps & {
+  addCoParticipant: () => void;
+  removeCoParticipant: (id: string) => void;
+  updateCoParticipant: (id: string, patch: Partial<CoParticipant>) => void;
 }) {
   return (
     <div>
-      <StepHeading title="Participantes do projeto" description="Adicione todos os integrantes e uma foto individual para cada pessoa." />
-      <div className="mt-6 space-y-4">
-        {participants.map((participant, index) => (
-          <div key={participant.id} className="participant-card rounded-lg border border-white/10 bg-white/[0.035] p-4">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <h3 className="font-semibold text-white">Participante {index + 1}</h3>
-              <button className="icon-button" type="button" onClick={() => removeParticipant(participant.id)} aria-label="Remover participante">
-                <Trash2 size={17} />
-              </button>
-            </div>
-            <div className="grid gap-4 md:grid-cols-[1fr_1fr_190px]">
-              <TextField
-                label="Nome completo"
-                placeholder="NOME COMPLETO"
-                value={participant.name}
-                onChange={(value) => updateParticipant(participant.id, { name: value })}
-                error={errors[`participant-${participant.id}-name`]}
-              />
-              <TextField
-                label="E-mail corporativo"
-                type="email"
-                icon={<Mail size={16} />}
-                placeholder={`seuemail@${allowedEmailDomain}`}
-                value={participant.email}
-                onChange={(value) => updateParticipant(participant.id, { email: value })}
-                error={errors[`participant-${participant.id}-email`]}
-              />
-              <FileDropzone
-                compact
-                label="Foto"
-                accept="image/png,image/jpeg,image/webp"
-                icon={<ImagePlus size={18} />}
-                fileName={participant.photo?.name}
-                preview={participant.photoPreview}
-                error={errors[`participant-${participant.id}-photo`]}
-                onFiles={(files) => setParticipantPhoto(participant, files[0] ?? null)}
-              />
-            </div>
-          </div>
-        ))}
+      <StepHeading title="Identificação do projeto" description="Informe o nome, área responsável, liderança e demais participantes." />
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <TextField
+          label="Nome do Projeto"
+          maxLength={80}
+          value={data.projectName}
+          onChange={(value) => updateField("projectName", value)}
+          error={errors.projectName}
+          placeholder="Smart Repair | Redução Inteligente de Reparos em Campo"
+        />
+        <SelectField
+          label="Área Responsável"
+          value={data.responsibleArea}
+          onChange={(value) => updateField("responsibleArea", value)}
+          options={responsibleAreas}
+          error={errors.responsibleArea}
+        />
+        <TextField
+          label="Líder do Projeto"
+          maxLength={60}
+          value={data.projectLeader}
+          onChange={(value) => updateField("projectLeader", value)}
+          error={errors.projectLeader}
+          placeholder="Gabriela Paula da Silva"
+        />
+        <TextField
+          label="E-mail do líder"
+          type="email"
+          icon={<Mail size={16} />}
+          value={data.leaderEmail}
+          onChange={(value) => updateField("leaderEmail", value)}
+          error={errors.leaderEmail}
+          placeholder={`lider@${allowedEmailDomain}`}
+        />
       </div>
-      <button className="btn-secondary mt-5" type="button" onClick={addParticipant}>
-        <Plus size={18} />
-        Adicionar participante
-      </button>
+
+      <div className="mt-7">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <StepHeading title="Coparticipantes" description="Inclua pessoas ou equipes envolvidas. Este campo é opcional." />
+          <button className="btn-secondary" type="button" onClick={addCoParticipant}>
+            <Plus size={18} />
+            Adicionar
+          </button>
+        </div>
+
+        {data.coParticipants.length > 0 && (
+          <div className="mt-4 space-y-3">
+            {data.coParticipants.map((participant, index) => (
+              <div key={participant.id} className="participant-card rounded-lg border border-white/10 bg-white/[0.035] p-4">
+                <div className="mb-4 flex items-center justify-between gap-3">
+                  <h3 className="font-semibold text-white">Coparticipante {index + 1}</h3>
+                  <button className="icon-button" type="button" onClick={() => removeCoParticipant(participant.id)} aria-label="Remover co participante">
+                    <Trash2 size={17} />
+                  </button>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <TextField
+                    label="Nome ou equipe"
+                    maxLength={60}
+                    value={participant.name}
+                    onChange={(value) => updateCoParticipant(participant.id, { name: value })}
+                    error={errors[`coParticipant-${participant.id}-name`]}
+                    placeholder="Equipe MIS, Qualidade, Operações FTTH"
+                  />
+                  <TextField
+                    label="E-mail, se houver"
+                    type="email"
+                    icon={<Mail size={16} />}
+                    value={participant.email}
+                    onChange={(value) => updateCoParticipant(participant.id, { email: value })}
+                    error={errors[`coParticipant-${participant.id}-email`]}
+                    placeholder={`nome@${allowedEmailDomain}`}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -573,91 +647,146 @@ function ProjectStep(props: StepProps) {
   const { data, errors, updateField } = props;
   return (
     <div>
-      <StepHeading title="Informações do projeto" description="Conte o nome, o início e o problema que a iniciativa resolve." />
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <TextField label="Nome do projeto" placeholder="Ex.: Automação da Jornada de Atendimento" value={data.projectName} onChange={(value) => updateField("projectName", value)} error={errors.projectName} />
-        <TextField label="Data de início" type="month" icon={<CalendarDays size={16} />} value={data.startDate} onChange={(value) => updateField("startDate", value)} error={errors.startDate} />
-        <TextArea className="md:col-span-2" label="Qual problema o projeto resolve?" placeholder="Descreva a dor, oportunidade ou desafio que motivou o projeto." value={data.problemSolved} onChange={(value) => updateField("problemSolved", value)} error={errors.problemSolved} />
-      </div>
-    </div>
-  );
-}
-
-function StrategyStep(props: StepProps) {
-  const { data, errors, updateField } = props;
-  return (
-    <div>
-      <StepHeading title="Estratégia e resultados" description="Conecte o projeto a uma meta da VP e descreva os impactos obtidos." />
-      <div className="mt-6 grid gap-4">
-        <TextArea label="Qual meta estratégica da VP este projeto apoia?" placeholder="Ex.: eficiência operacional, experiência do cliente, qualidade, produtividade..." value={data.strategicGoal} onChange={(value) => updateField("strategicGoal", value)} error={errors.strategicGoal} />
-        <TextArea label="Quais resultados o projeto gerou?" placeholder="Informe ganhos, indicadores, economia, redução de retrabalho ou melhoria de experiência." value={data.resultsGenerated} onChange={(value) => updateField("resultsGenerated", value)} error={errors.resultsGenerated} />
-      </div>
-    </div>
-  );
-}
-
-function TechnologyStep(props: StepProps) {
-  const { data, errors, updateField } = props;
-  return (
-    <div>
-      <StepHeading title="Tecnologia, IA e automação" description="Informe se há uso de automação, inteligência artificial ou outra tecnologia." />
+      <StepHeading title="Projeto" description="Detalhe o objetivo, a descrição executiva e se há ganho financeiro associado." />
       <div className="mt-6 space-y-5">
         <div>
-          <span className="field-label">O projeto utiliza automação, IA ou alguma tecnologia?</span>
+          <span className="field-label">O projeto possui ganho financeiro?</span>
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
             {[
-              ["yes", "Sim, utiliza tecnologia"],
-              ["no", "Não utiliza"],
+              ["yes", "Sim"],
+              ["no", "Não"],
             ].map(([value, label]) => (
               <button
                 key={value}
-                className={`choice-button ${data.usesTechnology === value ? "selected" : ""}`}
+                className={`choice-button ${data.hasFinancialGain === value ? "selected" : ""}`}
                 type="button"
-                onClick={() => updateField("usesTechnology", value as FormDataState["usesTechnology"])}
+                onClick={() => updateField("hasFinancialGain", value as FormDataState["hasFinancialGain"])}
               >
                 {label}
               </button>
             ))}
           </div>
-          <FieldError message={errors.usesTechnology} />
+          <FieldError message={errors.hasFinancialGain} />
         </div>
 
-        {data.usesTechnology === "yes" && (
+        {data.hasFinancialGain === "yes" && (
           <TextArea
-            label="Como a tecnologia é aplicada?"
-            placeholder="Conte quais ferramentas, automações, dados ou recursos de IA foram usados."
-            value={data.technologyDescription}
-            onChange={(value) => updateField("technologyDescription", value)}
-            error={errors.technologyDescription}
+            label="Descreva o ganho financeiro"
+            maxLength={300}
+            value={data.financialGainDescription}
+            onChange={(value) => updateField("financialGainDescription", value)}
+            error={errors.financialGainDescription}
+            placeholder="Redução estimada de custos operacionais relacionados a deslocamentos técnicos e retrabalho."
           />
         )}
+
+        <TextArea
+          label="Objetivo do Projeto"
+          maxLength={500}
+          value={data.projectObjective}
+          onChange={(value) => updateField("projectObjective", value)}
+          error={errors.projectObjective}
+          placeholder="Reduzir o volume de reparos em campo através da identificação automatizada de ofensores operacionais."
+        />
+        <TextArea
+          label="Descrição do Projeto"
+          maxLength={2000}
+          value={data.projectDescription}
+          onChange={(value) => updateField("projectDescription", value)}
+          error={errors.projectDescription}
+          placeholder="Explique como a solução funciona, quais tecnologias utiliza e como apoia a operação."
+        />
       </div>
     </div>
   );
 }
 
-function CultureStep(props: StepProps) {
-  const { data, errors, updateField } = props;
+function StrategicImpactStep({
+  data,
+  errors,
+  updateField,
+  toggleListValue,
+}: StepProps & {
+  toggleListValue: <K extends "strategicImpacts" | "impactedProducts">(key: K, value: string) => void;
+}) {
+  return (
+    <div>
+      <StepHeading title="Impacto estratégico" description="Selecione os impactos e descreva a jornada de AS IS para TO BE." />
+      <div className="mt-6 grid gap-5">
+        <CheckboxGroup
+          label="Impacto Estratégico"
+          options={strategicImpactOptions}
+          selected={data.strategicImpacts}
+          onToggle={(value) => toggleListValue("strategicImpacts", value)}
+          error={errors.strategicImpacts}
+        />
+        <TextArea
+          label="Situação Atual (AS IS)"
+          maxLength={700}
+          value={data.currentSituation}
+          onChange={(value) => updateField("currentSituation", value)}
+          error={errors.currentSituation}
+          placeholder="Atualmente as análises são realizadas manualmente através de diferentes bases e planilhas."
+        />
+        <TextArea
+          label="Situação Futura (TO BE)"
+          maxLength={700}
+          value={data.futureSituation}
+          onChange={(value) => updateField("futureSituation", value)}
+          error={errors.futureSituation}
+          placeholder="Os indicadores serão monitorados automaticamente em dashboard único com visão executiva."
+        />
+      </div>
+    </div>
+  );
+}
+
+function ResultsStep({
+  data,
+  errors,
+  updateField,
+  toggleListValue,
+}: StepProps & {
+  toggleListValue: <K extends "strategicImpacts" | "impactedProducts">(key: K, value: string) => void;
+}) {
   return (
     <div className="relative overflow-hidden">
       <img className="pointer-events-none absolute -right-20 bottom-0 hidden w-[54%] max-w-xl opacity-20 bridge-glow md:block" src={ponteEstaiada} alt="" />
       <div className="relative">
-      <StepHeading title="Cultura e expansão" description="Escolha a Paixão Púrpura mais aderente e conte se o projeto pode escalar." />
-      <div className="mt-6 grid gap-4">
-        <label className="block">
-          <span className="field-label">Paixão Púrpura</span>
-          <select className="field-input" value={data.purplePassion} onChange={(event) => updateField("purplePassion", event.target.value)}>
-            <option value="">Selecione uma opção</option>
-            {purplePassions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <FieldError message={errors.purplePassion} />
-        </label>
-        <TextArea label="O projeto possui potencial de expansão?" placeholder="Explique se pode ser replicado para outras áreas, canais, squads ou regionais." value={data.expansionPotential} onChange={(value) => updateField("expansionPotential", value)} error={errors.expansionPotential} />
-      </div>
+        <StepHeading title="Benefícios e resultados" description="Organize produtos impactados, premissas e resultados esperados." />
+        <div className="mt-6 grid gap-5">
+          <TextArea
+            label="Benefícios do Projeto"
+            maxLength={700}
+            value={data.projectBenefits}
+            onChange={(value) => updateField("projectBenefits", value)}
+            error={errors.projectBenefits}
+            placeholder="Redução de reparos, aumento de produtividade e melhoria da experiência do cliente."
+          />
+          <CheckboxGroup
+            label="Produtos Impactados"
+            options={impactedProductOptions}
+            selected={data.impactedProducts}
+            onToggle={(value) => toggleListValue("impactedProducts", value)}
+            error={errors.impactedProducts}
+          />
+          <TextArea
+            label="Premissas"
+            maxLength={500}
+            value={data.assumptions}
+            onChange={(value) => updateField("assumptions", value)}
+            error={errors.assumptions}
+            placeholder="Disponibilidade das bases operacionais e manutenção dos acessos SQL. Use N/A se não houver."
+          />
+          <TextArea
+            label="Resultados Esperados"
+            maxLength={700}
+            value={data.expectedResults}
+            onChange={(value) => updateField("expectedResults", value)}
+            error={errors.expectedResults}
+            placeholder="Redução de até 15% no volume de reparos em campo."
+          />
+        </div>
       </div>
     </div>
   );
@@ -678,11 +807,11 @@ function EvidenceStep({
 }) {
   return (
     <div>
-      <StepHeading title="Evidências e resultados" description={`Anexe vídeo, PowerPoint e materiais complementares. Limite por arquivo: ${maxFileSizeMb} MB.`} />
+      <StepHeading title="Evidências" description={`Anexe o vídeo obrigatório do projeto. Limite por arquivo: ${maxFileSizeMb} MB.`} />
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <FileDropzone
-          label="Vídeo do projeto"
-          accept="video/mp4,video/quicktime,video/x-msvideo"
+          label="Upload do Vídeo"
+          accept="video/mp4,video/quicktime,video/x-msvideo,video/webm"
           icon={<Video size={20} />}
           fileName={evidence.projectVideo?.name}
           error={errors.projectVideo}
@@ -724,21 +853,55 @@ function EvidenceStep({
   );
 }
 
-function ReviewStep({ data, submitState, submitMessage }: { data: FormDataState; submitState: string; submitMessage: string }) {
+function ReviewStep({
+  data,
+  submitState,
+  submitMessage,
+  onDownloadXlsx,
+}: {
+  data: FormDataState;
+  submitState: string;
+  submitMessage: string;
+  onDownloadXlsx: () => void;
+}) {
   return (
     <div>
-      <StepHeading title="Revisão antes do envio" description="Confira os principais dados antes de enviar para o fluxo Power Automate." />
+      <StepHeading title="Revisão antes do envio" description="Confira as respostas e baixe uma cópia organizada em XLSX antes de enviar." />
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
-        <ReviewCard title="Projeto" items={[["Nome", data.projectName], ["Início", data.startDate], ["Problema", data.problemSolved]]} />
-        <ReviewCard title="Participantes" items={data.participants.map((participant) => [participant.name, participant.email])} />
-        <ReviewCard title="Estratégia" items={[["Meta da VP", data.strategicGoal], ["Resultados", data.resultsGenerated]]} />
         <ReviewCard
-          title="Tecnologia e cultura"
+          title="Identificação"
           items={[
-            ["Usa tecnologia", data.usesTechnology === "yes" ? "Sim" : "Não"],
-            ["Descrição", data.technologyDescription || "Não aplicável"],
-            ["Paixão Púrpura", data.purplePassion],
-            ["Expansão", data.expansionPotential],
+            ["Nome do Projeto", data.projectName],
+            ["Área Responsável", data.responsibleArea],
+            ["Líder do Projeto", data.projectLeader],
+            ["E-mail do líder", data.leaderEmail],
+            ["Coparticipantes", formatCoParticipants(data.coParticipants)],
+          ]}
+        />
+        <ReviewCard
+          title="Projeto"
+          items={[
+            ["Possui ganho financeiro?", data.hasFinancialGain === "yes" ? "Sim" : "Não"],
+            ["Ganho financeiro", data.financialGainDescription || "N/A"],
+            ["Objetivo", data.projectObjective],
+            ["Descrição", data.projectDescription],
+          ]}
+        />
+        <ReviewCard
+          title="Impacto estratégico"
+          items={[
+            ["Impactos", data.strategicImpacts.join(", ")],
+            ["Situação Atual (AS IS)", data.currentSituation],
+            ["Situação Futura (TO BE)", data.futureSituation],
+          ]}
+        />
+        <ReviewCard
+          title="Resultados"
+          items={[
+            ["Benefícios", data.projectBenefits],
+            ["Produtos Impactados", data.impactedProducts.join(", ")],
+            ["Premissas", data.assumptions || "N/A"],
+            ["Resultados Esperados", data.expectedResults],
           ]}
         />
         <ReviewCard
@@ -750,12 +913,27 @@ function ReviewStep({ data, submitState, submitMessage }: { data: FormDataState;
           ]}
         />
       </div>
+
+      <div className="mt-6 flex flex-wrap justify-end gap-3">
+        <button className="btn-secondary" type="button" onClick={onDownloadXlsx}>
+          <Download size={18} />
+          Baixar XLSX das respostas
+        </button>
+      </div>
       {submitState === "error" && <StatusMessage type="error" message={submitMessage} />}
     </div>
   );
 }
 
-function ConfirmationStep({ submitState, submitMessage }: { submitState: string; submitMessage: string }) {
+function ConfirmationStep({
+  submitState,
+  submitMessage,
+  onDownloadXlsx,
+}: {
+  submitState: string;
+  submitMessage: string;
+  onDownloadXlsx: () => void;
+}) {
   const isSuccess = submitState === "success";
   return (
     <div className="grid min-h-[460px] place-items-center text-center">
@@ -765,6 +943,10 @@ function ConfirmationStep({ submitState, submitMessage }: { submitState: string;
         </div>
         <h2 className="mt-7 text-4xl font-black">{isSuccess ? "Inscrição enviada!" : "Portal pronto."}</h2>
         <p className="mt-4 text-vivo-text">{submitMessage || "Quando o endpoint estiver configurado, o envio seguirá para o Power Automate."}</p>
+        <button className="btn-primary mt-7" type="button" onClick={onDownloadXlsx}>
+          <Download size={18} />
+          Baixar XLSX das respostas
+        </button>
       </motion.div>
     </div>
   );
@@ -793,6 +975,7 @@ function TextField({
   type = "text",
   icon,
   placeholder,
+  maxLength,
 }: {
   label: string;
   value: string;
@@ -801,14 +984,52 @@ function TextField({
   type?: string;
   icon?: React.ReactNode;
   placeholder?: string;
+  maxLength?: number;
 }) {
   return (
     <label className="block">
       <span className="field-label">{label}</span>
       <span className="relative block">
         {icon && <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-vivo-lilac">{icon}</span>}
-        <input className={`field-input ${icon ? "field-input-with-icon" : ""}`} type={type} value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
+        <input
+          className={`field-input ${icon ? "field-input-with-icon" : ""}`}
+          type={type}
+          value={value}
+          maxLength={maxLength}
+          placeholder={placeholder}
+          onChange={(event) => onChange(event.target.value)}
+        />
       </span>
+      {maxLength && <CharacterCount value={value} maxLength={maxLength} />}
+      <FieldError message={error} />
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+  error,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: string[];
+  error?: string;
+}) {
+  return (
+    <label className="block">
+      <span className="field-label">{label}</span>
+      <select className="field-input" value={value} onChange={(event) => onChange(event.target.value)}>
+        <option value="">Selecione uma opção</option>
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
       <FieldError message={error} />
     </label>
   );
@@ -821,6 +1042,7 @@ function TextArea({
   error,
   placeholder,
   className = "",
+  maxLength,
 }: {
   label: string;
   value: string;
@@ -828,13 +1050,55 @@ function TextArea({
   error?: string;
   placeholder?: string;
   className?: string;
+  maxLength?: number;
 }) {
   return (
     <label className={`block ${className}`}>
       <span className="field-label">{label}</span>
-      <textarea className="field-input min-h-32 resize-y" value={value} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
+      <textarea
+        className="field-input min-h-32 resize-y"
+        value={value}
+        maxLength={maxLength}
+        placeholder={placeholder}
+        onChange={(event) => onChange(event.target.value)}
+      />
+      {maxLength && <CharacterCount value={value} maxLength={maxLength} />}
       <FieldError message={error} />
     </label>
+  );
+}
+
+function CheckboxGroup({
+  label,
+  options,
+  selected,
+  onToggle,
+  error,
+}: {
+  label: string;
+  options: string[];
+  selected: string[];
+  onToggle: (value: string) => void;
+  error?: string;
+}) {
+  return (
+    <fieldset>
+      <legend className="field-label">{label}</legend>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {options.map((option) => (
+          <button
+            key={option}
+            className={`choice-button min-h-[62px] ${selected.includes(option) ? "selected" : ""}`}
+            type="button"
+            onClick={() => onToggle(option)}
+          >
+            <ClipboardCheck size={18} />
+            {option}
+          </button>
+        ))}
+      </div>
+      <FieldError message={error} />
+    </fieldset>
   );
 }
 
@@ -843,7 +1107,6 @@ function FileDropzone({
   accept,
   icon,
   fileName,
-  preview,
   error,
   compact = false,
   multiple = false,
@@ -853,7 +1116,6 @@ function FileDropzone({
   accept: string;
   icon: React.ReactNode;
   fileName?: string;
-  preview?: string;
   error?: string;
   compact?: boolean;
   multiple?: boolean;
@@ -878,13 +1140,9 @@ function FileDropzone({
         onDrop={handleDrop}
       >
         <input className="sr-only" type="file" accept={accept} multiple={multiple} onChange={handleChange} />
-        {preview ? (
-          <img className="h-20 w-20 rounded-md object-cover ring-1 ring-vivo-neon/40" src={preview} alt={`Preview de ${label}`} />
-        ) : (
-          <span className="grid h-12 w-12 place-items-center rounded-md border border-vivo-neon/40 bg-vivo-purple/20 text-vivo-lilac">
-            {icon}
-          </span>
-        )}
+        <span className="grid h-12 w-12 place-items-center rounded-md border border-vivo-neon/40 bg-vivo-purple/20 text-vivo-lilac">
+          {icon}
+        </span>
         <span className="mt-3 block max-w-full truncate text-sm font-semibold text-white">{fileName || "Arraste ou selecione arquivo"}</span>
         <span className="mt-1 block text-xs text-vivo-text">Clique para procurar</span>
       </span>
@@ -909,6 +1167,14 @@ function ReviewCard({ title, items }: { title: string; items: string[][] }) {
   );
 }
 
+function CharacterCount({ value, maxLength }: { value: string; maxLength: number }) {
+  return (
+    <span className="mt-1 block text-right text-xs text-white/45">
+      {value.length}/{maxLength}
+    </span>
+  );
+}
+
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return (
@@ -928,8 +1194,9 @@ function StatusMessage({ type, message }: { type: "error" | "success"; message: 
   );
 }
 
-function requireText(errors: Record<string, string>, key: string, value: string) {
+function requireText(errors: Record<string, string>, key: string, value: string, maxLength?: number) {
   if (!value.trim()) errors[key] = "Campo obrigatório.";
+  else if (maxLength && value.length > maxLength) errors[key] = `Use no máximo ${maxLength} caracteres.`;
 }
 
 function isValidEmail(value: string) {
@@ -972,23 +1239,28 @@ async function buildPayload(data: FormDataState) {
   return {
     submittedAt: new Date().toISOString(),
     source: "vivo-back-to-future-form",
-    participants: await Promise.all(
-      data.participants.map(async (participant) => ({
+    identification: {
+      projectName: data.projectName.trim(),
+      responsibleArea: data.responsibleArea,
+      projectLeader: data.projectLeader.trim(),
+      leaderEmail: data.leaderEmail.trim(),
+      coParticipants: data.coParticipants.map((participant) => ({
         name: participant.name.trim(),
         email: participant.email.trim(),
-        photo: participant.photo ? await toBase64(participant.photo) : null,
       })),
-    ),
+    },
     project: {
-      projectName: data.projectName.trim(),
-      startDate: data.startDate,
-      problemSolved: data.problemSolved.trim(),
-      strategicGoal: data.strategicGoal.trim(),
-      resultsGenerated: data.resultsGenerated.trim(),
-      usesTechnology: data.usesTechnology === "yes",
-      technologyDescription: data.technologyDescription.trim(),
-      purplePassion: data.purplePassion,
-      expansionPotential: data.expansionPotential.trim(),
+      hasFinancialGain: data.hasFinancialGain === "yes",
+      financialGainDescription: data.financialGainDescription.trim() || "N/A",
+      projectObjective: data.projectObjective.trim(),
+      projectDescription: data.projectDescription.trim(),
+      strategicImpacts: data.strategicImpacts,
+      currentSituation: data.currentSituation.trim(),
+      futureSituation: data.futureSituation.trim(),
+      projectBenefits: data.projectBenefits.trim(),
+      impactedProducts: data.impactedProducts,
+      assumptions: data.assumptions.trim() || "N/A",
+      expectedResults: data.expectedResults.trim(),
     },
     evidence: {
       projectVideo: await optionalFile(data.evidence.projectVideo),
@@ -996,6 +1268,67 @@ async function buildPayload(data: FormDataState) {
       additionalEvidence: await Promise.all(data.evidence.additionalEvidence.map(toBase64)),
     },
   };
+}
+
+async function exportResponsesXlsx(data: FormDataState) {
+  const answerRows = [
+    ["Campo", "Resposta"],
+    ["Nome do Projeto", data.projectName],
+    ["Área Responsável", data.responsibleArea],
+    ["Líder do Projeto", data.projectLeader],
+    ["E-mail do líder", data.leaderEmail],
+    ["Coparticipantes", formatCoParticipants(data.coParticipants)],
+    ["O projeto possui ganho financeiro?", data.hasFinancialGain === "yes" ? "Sim" : "Não"],
+    ["Descreva o ganho financeiro", data.financialGainDescription || "N/A"],
+    ["Objetivo do Projeto", data.projectObjective],
+    ["Descrição do Projeto", data.projectDescription],
+    ["Impacto Estratégico", data.strategicImpacts.join(", ")],
+    ["Situação Atual (AS IS)", data.currentSituation],
+    ["Situação Futura (TO BE)", data.futureSituation],
+    ["Benefícios do Projeto", data.projectBenefits],
+    ["Produtos Impactados", data.impactedProducts.join(", ")],
+    ["Premissas", data.assumptions || "N/A"],
+    ["Resultados Esperados", data.expectedResults],
+  ];
+
+  const fileRows = [
+    ["Tipo", "Arquivo"],
+    ["Vídeo", data.evidence.projectVideo?.name || "Não anexado"],
+    ["PowerPoint", data.evidence.presentation?.name || "Não anexado"],
+    ...data.evidence.additionalEvidence.map((file, index) => [`Evidência complementar ${index + 1}`, file.name]),
+  ];
+
+  await writeXlsxFile([
+    {
+      sheet: "Respostas",
+      data: answerRows,
+      columns: [{ width: 34 }, { width: 90 }],
+      stickyRowsCount: 1,
+    },
+    {
+      sheet: "Anexos",
+      data: fileRows,
+      columns: [{ width: 32 }, { width: 70 }],
+      stickyRowsCount: 1,
+    },
+  ]).toFile(`respostas-${slugify(data.projectName || "projeto")}.xlsx`);
+}
+
+function formatCoParticipants(coParticipants: CoParticipant[]) {
+  if (coParticipants.length === 0) return "N/A";
+  return coParticipants
+    .map((participant) => `${participant.name}${participant.email ? ` (${participant.email})` : ""}`)
+    .join("; ");
+}
+
+function slugify(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "")
+    .slice(0, 60);
 }
 
 export default App;

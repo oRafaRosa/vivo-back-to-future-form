@@ -1,59 +1,135 @@
 # Perguntas do formulário
 
-## 1. Nome dos participantes do projeto
-**Descrição:** Informe o nome completo de todas as pessoas envolvidas no projeto.
+Modelo atualizado a partir do arquivo `Atualizacao Formulario Projetos.docx`.
 
-Implementação recomendada: componente dinâmico de participantes, com um bloco por pessoa.
+## 1. Nome do Projeto
+**Tipo:** resposta curta
+**Limite:** máximo 80 caracteres
+**Obrigatório:** sim
 
-## 2. E-mail dos participantes do projeto
-**Descrição:** Preencha o e-mail corporativo de cada participante.
+## 2. Área Responsável
+**Tipo:** dropdown
+**Obrigatório:** sim
 
-Validação sugerida: exigir e-mail válido e, se possível, domínio corporativo permitido.
+Opções sugeridas:
 
-## 3. Foto de cada participante do projeto
-**Descrição:** Anexe uma foto individual de cada integrante do projeto.
+- Gerência de Serviços ao Cliente Centralizado
+- Operações FTTH
+- Qualidade
+- MIS / Analytics
+- Atendimento
+- Outra área
 
-Formatos sugeridos: PNG, JPG, JPEG, WEBP.
+## 3. Líder do Projeto
+**Tipo:** resposta curta
+**Limite:** máximo 60 caracteres
+**Obrigatório:** sim
 
-## 4. Nome do projeto
-**Descrição:** Informe o nome pelo qual o projeto é conhecido.
+## 4. E-mail do líder
+**Tipo:** e-mail
+**Obrigatório:** sim
 
-## 5. Data de início do projeto
-**Descrição:** Indique quando o projeto começou, no formato mês/ano.
+Validação sugerida: exigir e-mail válido e domínio corporativo configurado em `VITE_ALLOWED_EMAIL_DOMAIN`.
 
-## 6. Qual problema o projeto resolve?
-**Descrição:** Descreva de forma objetiva qual desafio, dor ou oportunidade o projeto aborda.
+## 5. Coparticipantes
+**Tipo:** lista dinâmica opcional
+**Limite:** máximo 60 caracteres por nome/equipe
+**Obrigatório:** não
 
-## 7. Qual meta estratégica da VP este projeto apoia?
-**Descrição:** Explique qual objetivo estratégico da VP está sendo atendido pelo projeto.
+Implementação: permitir adicionar/remover coparticipantes, sem foto de perfil.
 
-## 8. Quais resultados o projeto gerou?
-**Descrição:** Apresente os principais ganhos ou impactos obtidos, como eficiência, economia, melhoria de experiência, qualidade, produtividade ou redução de retrabalho.
+## 6. O projeto possui ganho financeiro?
+**Tipo:** múltipla escolha
+**Obrigatório:** sim
 
-## 9. O projeto utiliza automação, IA ou alguma tecnologia?
-**Descrição:** Informe se o projeto envolve uso de tecnologia, automação ou inteligência artificial e como isso é aplicado.
+Opções:
 
-Implementação recomendada: campo Sim/Não. Se Sim, abrir textarea para detalhamento.
+- Sim
+- Não
 
-## 10. Em qual Paixão Púrpura o projeto mais se enquadra?
-**Descrição:** Indique qual valor ou pilar cultural da empresa melhor representa o projeto.
+## 7. Descreva o ganho financeiro
+**Tipo:** parágrafo
+**Limite:** máximo 300 caracteres
+**Obrigatório:** condicional, apenas se houver ganho financeiro
 
-Opções oficiais:
+## 8. Objetivo do Projeto
+**Tipo:** parágrafo
+**Limite:** máximo 500 caracteres
+**Obrigatório:** sim
 
-- O tempo do cliente é agora
-- Gente é a nossa melhor tecnologia
-- Ser curioso pega bem
-- Dá para ser mais simples
-- Resultado é comigo
+## 9. Descrição do Projeto
+**Tipo:** parágrafo
+**Limite:** máximo 2.000 caracteres
+**Obrigatório:** sim
 
-## 11. O projeto possui potencial de expansão?
-**Descrição:** Explique se o projeto pode ser replicado ou ampliado para outras áreas ou contextos.
+## 10. Impacto Estratégico
+**Tipo:** caixa de seleção
+**Obrigatório:** sim
 
-## 12. Anexar evidências/resultados
-**Descrição:** Inclua materiais de apoio que comprovem o projeto.
+Opções sugeridas:
 
-Tipos esperados:
+- Produtividade
+- Eficiência Operacional
+- IA
+- Automação
+- Experiência do Cliente
+- Ganho financeiro
+- Qualidade
+- Escalabilidade
 
-- Vídeo do projeto
-- Apresentação em PowerPoint de até 5 páginas
-- Evidências complementares, se aplicável
+## 11. Situação Atual (AS IS)
+**Tipo:** parágrafo
+**Limite:** máximo 700 caracteres
+**Obrigatório:** sim
+
+## 12. Situação Futura (TO BE)
+**Tipo:** parágrafo
+**Limite:** máximo 700 caracteres
+**Obrigatório:** sim
+
+## 13. Benefícios do Projeto
+**Tipo:** parágrafo
+**Limite:** máximo 700 caracteres
+**Obrigatório:** sim
+
+## 14. Produtos Impactados
+**Tipo:** caixa de seleção
+**Obrigatório:** sim
+
+Opções sugeridas:
+
+- Fibra
+- IPTV
+- Voz IMS
+- B2B
+- B2C
+- Móvel
+- Outros
+
+## 15. Premissas
+**Tipo:** parágrafo
+**Limite:** máximo 500 caracteres
+**Obrigatório:** não
+
+Campos não aplicáveis podem ser preenchidos com `N/A`.
+
+## 16. Resultados Esperados
+**Tipo:** parágrafo
+**Limite:** máximo 700 caracteres
+**Obrigatório:** sim
+
+## 17. Upload do Vídeo
+**Tipo:** upload de arquivo
+**Regra:** vídeo de até 3 minutos
+**Obrigatório:** sim
+
+## 18. Apresentação PowerPoint
+**Tipo:** upload de arquivo
+**Obrigatório:** não
+
+## 19. Outras evidências/resultados
+**Tipo:** múltiplos uploads
+**Obrigatório:** não
+
+## 20. Exportação XLSX
+Ao final da revisão e na tela de confirmação, o usuário pode baixar um arquivo `.xlsx` com as respostas organizadas em abas de respostas e anexos.

@@ -7,16 +7,21 @@ Campos sugeridos:
 | Campo | Tipo | Obrigatório | Observação |
 |---|---|---:|---|
 | Title | Texto | Sim | Nome do projeto |
-| DataInicioProjeto | Texto ou Data | Sim | Mês/ano do início |
-| ProblemaResolvido | Múltiplas linhas | Sim | Descrição do problema |
-| MetaEstrategicaVP | Múltiplas linhas | Sim | Meta estratégica apoiada |
-| ResultadosGerados | Múltiplas linhas | Sim | Resultados do projeto |
-| UsaTecnologia | Sim/Não | Sim | Uso de IA, automação ou tecnologia |
-| DescricaoTecnologia | Múltiplas linhas | Condicional | Obrigatório se UsaTecnologia = Sim |
-| PaixaoPurpura | Escolha | Sim | Confirmar opções oficiais |
-| PotencialExpansao | Múltiplas linhas | Sim | Replicabilidade/escala |
-| ParticipantesJson | Múltiplas linhas | Sim | Lista de participantes em JSON |
-| LinksFotosParticipantes | Múltiplas linhas | Não | URLs das fotos |
+| AreaResponsavel | Texto ou escolha | Sim | Área responsável |
+| LiderProjeto | Texto | Sim | Líder do projeto |
+| EmailLider | Texto | Sim | E-mail corporativo do líder |
+| CoParticipantesJson | Múltiplas linhas | Não | Lista de coparticipantes em JSON |
+| PossuiGanhoFinanceiro | Sim/Não | Sim | Indica ganho financeiro |
+| DescricaoGanhoFinanceiro | Múltiplas linhas | Condicional | Obrigatório se houver ganho financeiro |
+| ObjetivoProjeto | Múltiplas linhas | Sim | Objetivo do projeto |
+| DescricaoProjeto | Múltiplas linhas | Sim | Descrição executiva do projeto |
+| ImpactoEstrategico | Múltiplas linhas ou escolha múltipla | Sim | Impactos selecionados |
+| SituacaoAtualAsIs | Múltiplas linhas | Sim | Situação atual |
+| SituacaoFuturaToBe | Múltiplas linhas | Sim | Situação futura |
+| BeneficiosProjeto | Múltiplas linhas | Sim | Benefícios |
+| ProdutosImpactados | Múltiplas linhas ou escolha múltipla | Sim | Produtos impactados |
+| Premissas | Múltiplas linhas | Não | Premissas do projeto |
+| ResultadosEsperados | Múltiplas linhas | Sim | Resultados esperados |
 | LinkVideo | Hiperlink ou Texto | Não | Vídeo do projeto |
 | LinkPowerPoint | Hiperlink ou Texto | Não | Apresentação |
 | LinksEvidenciasAdicionais | Múltiplas linhas | Não | URLs adicionais |
@@ -26,20 +31,20 @@ Campos sugeridos:
 
 ## Biblioteca: EvidenciasProjetos
 
-Finalidade: armazenar fotos dos participantes, vídeos, PowerPoints e evidências complementares.
+Finalidade: armazenar vídeos, PowerPoints e evidências complementares.
 
 Estrutura recomendada por inscrição:
 
 ```text
 EvidenciasProjetos/
 └─ Projeto-{ID}-{NomeProjetoSanitizado}/
-   ├─ fotos-participantes/
    ├─ video/
    ├─ powerpoint/
    └─ evidencias/
 ```
 
 ## Permissões
+
 Preferencialmente:
 
 - Usuários preenchem o formulário sem acesso direto de edição à lista.
